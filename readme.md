@@ -2,6 +2,7 @@
 
 [Kynning í fyrirlestri](https://youtu.be/W0k01_KRE4I).
 
+ATH. notandi á gagnagrunn verður að vera með CREATE role fyrir gagnagrunninn svo uuid virki.
 Útbúa skal vefþjónustur fyrir veitingastað sem bíður upp á fyrir óauðkenndan notanda að:
 
 * skoða matseðil

@@ -8,13 +8,12 @@ CREATE TABLE public.users(
   username VARCHAR(128) NOT NULL,
   name VARCHAR(256) NOT NULL UNIQUE,
   password VARCHAR(256) NOT NULL,
-  admin BOOLEAN DEFAULT false,
-)
+  admin BOOLEAN DEFAULT false
+);
 
 CREATE TABLE menu.categories(
   id SERIAL PRIMARY KEY,
-  title VARCHAR(128) UNIQUE NOT NULL,
-  PRIMARY KEY (id)
+  title VARCHAR(128) UNIQUE NOT NULL
 );
 CREATE TABLE menu.products(
   id SERIAL PRIMARY KEY,
@@ -57,7 +56,7 @@ CREATE TYPE orderState AS ENUM ('NEW', 'PREPARE', 'COOKING', 'READY','FINISHED')
 CREATE TABLE orders.states(
   id SERIAL PRIMARY KEY,
   order_id uuid NOT NULL,
-  state orderState NOT NULL
+  state orderState NOT NULL,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (order_id) REFERENCES orders.orders(id) ON DELETE CASCADE
 );
