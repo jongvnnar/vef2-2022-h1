@@ -51,8 +51,8 @@ INSERT INTO menu.products (title, price, description, category, image) VALUES ('
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Thirsty Rabbit', 2990, 'Bourbon, carrot mix, banana liquor', 3,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Rose Kiss', 2890, 'Amagin, chambord, red wine rasperry puree, rose prosecco', 3,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('African Wildlife', 2990, 'Elephant sloe gin, apple liquor, banana and egg white', 3,'/');
-INSERT INTO menu.products (title, price, description, category, image) VALUES ('Wild Wild West', , 'Honey Jack Daniels, Salted Caramel, Fresh Lemon & Lemon Bitters', 3,'/');
-INSERT INTO menu.products (title, price, description, category, image) VALUES ("Basil Hendrick's", 2990, "Hendrick's Gin, Basil, Lime & Sparkling Wine", 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Wild Wild West', 2790, 'Honey Jack Daniels, Salted Caramel, Fresh Lemon & Lemon Bitters', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Basil Hendrick''s', 2990, 'Hendrick''s Gin, Basil, Lime & Sparkling Wine', 3,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Peach Perfect', 2890, 'Drambue, Peach Liquor, Elderflower, Cherry Heering & Lime', 3,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Green Is Good', 2790, 'Woodford Reserve, Apple Liquor, Basil, Lemon & Green Apples', 3,'/');
 
