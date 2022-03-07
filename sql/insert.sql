@@ -11,7 +11,6 @@ INSERT INTO menu.categories (title) VALUES ('drinks');
 INSERT INTO menu.categories (title) VALUES ('appetizers');
 INSERT INTO menu.categories (title) VALUES ('desserts');
 
-
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Vegan Peanut Steak',5390, 'We make the steak from scratch from nuts, beans and seasonal vegetables. Served with vegetables and green pesto', 1,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Grilled Cauliflower',4890, 'Creamy barley, grapes, coriander, wasabi beans and satay sauce', 1,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Duck Salat',4990, 'Confit duck, spinach, mandarins and mint dressing', 1,'/');
@@ -43,6 +42,17 @@ INSERT INTO menu.products (title, price, description, category, image) VALUES ('
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Tiger Shrimp Tempura',3680, 'Kimchi, lemon and yuzu dressing', 4,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Langoustine Tempura',4590, 'Beer batter, chili mayonnaise, oats and roasted garlic', 4,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Smoked Arctic Char',3440, 'Lightly smoked artic char, crispy spiced bread, pickled fennel and mustard sauce', 4,'/');
-INSERT INTO menu.products (title, price, description, category, image) VALUES ('Duck Salad 1/2 Portion',3390, 'Confit duck, spinach, mandarins and mint dressing', 4,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Duck Salad',3390, 'Confit duck, spinach, mandarins and mint dressing. 1/2 portion.', 4,'/');
 
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Sweet Black Death', 2990, 'Dill infused Brennivín, blueberry liquor, egg white', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Jalapeno Margarita', 2990, 'Tequila, Grand Marnier, Jalapeno & Pineapple', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Blueberry Dream', 2790, 'Ólafsson Gin, blueberry 64°, elderflower, port wine, egg white', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Cocktail of the Week', 2390, 'Ask your server', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Thirsty Rabbit', 2990, 'Bourbon, carrot mix, banana liquor', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Rose Kiss', 2890, 'Amagin, chambord, red wine rasperry puree, rose prosecco', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('African Wildlife', 2990, 'Elephant sloe gin, apple liquor, banana and egg white', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Wild Wild West', , 'Honey Jack Daniels, Salted Caramel, Fresh Lemon & Lemon Bitters', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ("Basil Hendrick's", 2990, "Hendrick's Gin, Basil, Lime & Sparkling Wine", 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Peach Perfect', 2890, 'Drambue, Peach Liquor, Elderflower, Cherry Heering & Lime', 3,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Green Is Good', 2790, 'Woodford Reserve, Apple Liquor, Basil, Lemon & Green Apples', 3,'/');
 
