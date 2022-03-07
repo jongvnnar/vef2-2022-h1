@@ -47,7 +47,7 @@ CREATE TABLE  orders.orders(
 CREATE TABLE  orders.lines(
   product_id INTEGER NOT NULL,
   cart_id uuid NOT NULL,
-  num_of_products INTEGER CHECK(num_of_products > 0),
+  num_of_products INTEGER CHECK(num_of_products > 0) NOT NULL,
   FOREIGN KEY (product_id) REFERENCES menu.products(id) ON DELETE CASCADE,
   FOREIGN KEY (cart_id) REFERENCES carts.carts(id) ON DELETE CASCADE
 );

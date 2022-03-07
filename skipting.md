@@ -18,4 +18,4 @@
 - [ ] orders tests
 - [ ] websockets
 - [ ] users
-- [ ] index-route
+- [x] index-route
