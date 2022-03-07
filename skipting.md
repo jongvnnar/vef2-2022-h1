@@ -11,7 +11,7 @@
 ## Fannar
 - [ ] cart
 - [ ] cart tests
-- [ ] paging
+- [x] paging
 - [ ] setja upp a heroku
 ## Jón
 - [ ] orders
