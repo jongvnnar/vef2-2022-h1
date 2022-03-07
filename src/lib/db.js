@@ -24,6 +24,44 @@ pool.on('error', (err) => {
   process.exit(-1);
 });
 
+/**
+ * @typedef {Object} Category
+ * @property {number} id - ID of category
+ * @property {string} title - Title of category
+ */
+
+/**
+ * @typedef {Object} Product
+ * @property {number} id - ID of product
+ * @property {string} title - product title
+ * @property {number} price - price of product
+ * @property {string} description - product description
+ * @property {string} image - image url
+ * @property {number} category - ID of category
+ * @property {Date} created - time of creation
+ * @property {Date} updated - time product was last updated
+ */
+
+/**
+ * @typedef {Object} Cart
+ * @property {string} id - ID of cart
+ * @property {Date} created - time of creation
+ */
+
+/**
+ * @typedef {Object} Line
+ * @property {number} product_id - ID of product
+ * @property {string} cart_id - ID of cart
+ * @property {number} num_of_products - number of products
+ */
+
+/**
+ * @typedef {Object} Order
+ * @property {string} id - ID of order
+ * @property {Date} created - time of creation
+ * @property {string} name - order name
+ */
+
 export async function query(q, values = []) {
   let client;
   try {

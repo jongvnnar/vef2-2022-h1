@@ -1,6 +1,6 @@
 [
   {
-    "href": "/orders/id",
+    "href": "/orders/{id}",
     "type": "ws",
     "authenticated": false
   },
