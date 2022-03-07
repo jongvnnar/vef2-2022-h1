@@ -3,7 +3,7 @@ CREATE SCHEMA menu;
 CREATE SCHEMA carts;
 CREATE SCHEMA orders;
 
-CREATE TABLE public.users(
+CREATE TABLE  public.users(
   id SERIAL PRIMARY KEY,
   username VARCHAR(128) NOT NULL,
   name VARCHAR(256) NOT NULL UNIQUE,
@@ -11,11 +11,11 @@ CREATE TABLE public.users(
   admin BOOLEAN DEFAULT false
 );
 
-CREATE TABLE menu.categories(
+CREATE TABLE  menu.categories(
   id SERIAL PRIMARY KEY,
   title VARCHAR(128) UNIQUE NOT NULL
 );
-CREATE TABLE menu.products(
+CREATE TABLE  menu.products(
   id SERIAL PRIMARY KEY,
   title VARCHAR(128) UNIQUE NOT NULL,
   price INTEGER NOT NULL,
@@ -27,11 +27,11 @@ CREATE TABLE menu.products(
   FOREIGN KEY (category) REFERENCES menu.categories (id) ON DELETE CASCADE
 );
 
-CREATE TABLE carts.carts(
+CREATE TABLE  carts.carts(
   id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE carts.lines(
+CREATE TABLE  carts.lines(
   product_id INTEGER NOT NULL,
   cart_id uuid NOT NULL,
   num_of_products INTEGER CHECK(num_of_products > 0),
@@ -39,12 +39,12 @@ CREATE TABLE carts.lines(
   FOREIGN KEY (cart_id) REFERENCES carts.carts(id) ON DELETE CASCADE
 );
 
-CREATE TABLE orders.orders(
+CREATE TABLE  orders.orders(
   id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   name VARCHAR(128) NOT NULL
 );
-CREATE TABLE orders.lines(
+CREATE TABLE  orders.lines(
   product_id INTEGER NOT NULL,
   cart_id uuid NOT NULL,
   num_of_products INTEGER CHECK(num_of_products > 0),
@@ -52,14 +52,12 @@ CREATE TABLE orders.lines(
   FOREIGN KEY (cart_id) REFERENCES carts.carts(id) ON DELETE CASCADE
 );
 
-CREATE TYPE orderState AS ENUM ('NEW', 'PREPARE', 'COOKING', 'READY','FINISHED');
-CREATE TABLE orders.states(
+CREATE TYPE  orders.state AS ENUM ('NEW', 'PREPARE', 'COOKING', 'READY','FINISHED');
+CREATE TABLE  orders.states(
   id SERIAL PRIMARY KEY,
-  order_id uuid NOT NULL,
-  state orderState NOT NULL,
+  order_id uuid NOT NULL UNIQUE,
+  state orders.state NOT NULL,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (order_id) REFERENCES orders.orders(id) ON DELETE CASCADE
 );
 
--- Þarf þetta??
-CREATE UNIQUE INDEX idx_orders_states ON orders.states(order_id);
