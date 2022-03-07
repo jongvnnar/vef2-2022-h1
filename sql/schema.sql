@@ -5,8 +5,8 @@ CREATE SCHEMA orders;
 
 CREATE TABLE  public.users(
   id SERIAL PRIMARY KEY,
-  username VARCHAR(128) NOT NULL,
-  name VARCHAR(256) NOT NULL UNIQUE,
+  username VARCHAR(128) NOT NULL UNIQUE,
+  name VARCHAR(256) NOT NULL,
   password VARCHAR(256) NOT NULL,
   admin BOOLEAN DEFAULT false
 );

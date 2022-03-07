@@ -1,5 +1,6 @@
 import { readFile } from 'fs/promises';
 import pg from 'pg';
+import { toPositiveNumberOrDefault } from './utils/toPositiveNumberOrDefault.js';
 
 const SCHEMA_FILE = './sql/schema.sql';
 const DROP_SCHEMA_FILE = './sql/drop.sql';
@@ -82,6 +83,29 @@ export async function query(q, values = []) {
   } finally {
     client.release();
   }
+}
+
+export async function pagedQuery(
+  sqlQuery,
+  values = [],
+  { offset = 0, limit = 10 } = {}
+) {
+  const sqlLimit = values.length + 1;
+  const sqlOffset = values.length + 2;
+  const q = `${sqlQuery} LIMIT $${sqlLimit} OFFSET $${sqlOffset}`;
+
+  const limitAsNumber = toPositiveNumberOrDefault(limit, 10);
+  const offsetAsNumber = toPositiveNumberOrDefault(offset, 0);
+
+  const combinedValues = values.concat([limitAsNumber, offsetAsNumber]);
+
+  const result = await query(q, combinedValues);
+
+  return {
+    limit: limitAsNumber,
+    offset: offsetAsNumber,
+    items: result.rows,
+  };
 }
 
 export async function createSchema(schemaFile = SCHEMA_FILE) {

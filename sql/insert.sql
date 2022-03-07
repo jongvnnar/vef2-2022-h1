@@ -3,12 +3,14 @@ INSERT INTO users (id, name, username, password) VALUES (2, 'Jón', 'jon', '$2b$
 INSERT INTO users (id, name, username, password) VALUES (3, 'Benni', 'benni', '$2b$12$dPBhkw2H.FWPWflgPUvnSOg0jJEmzUPiadaseJL/f77EdGZx6F9ay');
 INSERT INTO users (id, name, username, password) VALUES (4, 'Boggi', 'borgar', '$2b$12$dPBhkw2H.FWPWflgPUvnSOg0jJEmzUPiadaseJL/f77EdGZx6F9ay');
 INSERT INTO users (id, name, username, password) VALUES (5, 'Fannar', 'fannar', '$2b$12$dPBhkw2H.FWPWflgPUvnSOg0jJEmzUPiadaseJL/f77EdGZx6F9ay');
+ALTER SEQUENCE "users_id_seq" RESTART WITH 6;
 
-INSERT INTO menu.categories (id, title) VALUES (1, 'mains');
-INSERT INTO menu.categories (id, title) VALUES (2, 'sides');
-INSERT INTO menu.categories (id, title) VALUES (3, 'drinks');
-INSERT INTO menu.categories (id, title) VALUES (4, 'appetizers');
-INSERT INTO menu.categories (id, title) VALUES (5, 'desserts');
+INSERT INTO menu.categories (title) VALUES ('mains');
+INSERT INTO menu.categories (title) VALUES ('sides');
+INSERT INTO menu.categories (title) VALUES ('drinks');
+INSERT INTO menu.categories (title) VALUES ('appetizers');
+INSERT INTO menu.categories (title) VALUES ('desserts');
+
 
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Vegan Peanut Steak',5390, 'We make the steak from scratch from nuts, beans and seasonal vegetables. Served with vegetables and green pesto', 1,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Grilled Cauliflower',4890, 'Creamy barley, grapes, coriander, wasabi beans and satay sauce', 1,'/');
