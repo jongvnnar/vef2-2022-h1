@@ -34,6 +34,14 @@ export function idValidator(idName) {
   ];
 }
 
+export function positiveIntValidator(fieldName) {
+  return [
+    body(fieldName)
+      .isInt({ min: 1})
+      .withMessage(`${fieldName} must be an integer larger than 0`),
+  ];
+}
+
 // export const noDuplicateEventsValidator = body('name').custom(async (value) => {
 //   const eventExists = await listEventByName(value);
 //   if (eventExists) {
