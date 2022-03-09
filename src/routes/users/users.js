@@ -76,6 +76,7 @@ export async function currentUserRoute(req, res) {
   return res.json(user);
 }
 
+//TODO
 export async function updateCurrentUserRoute(req, res) {
   const { user: { id } = {} } = req;
   const user = await findById(id);

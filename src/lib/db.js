@@ -1,6 +1,5 @@
 import { readFile } from 'fs/promises';
 import pg from 'pg';
-import xss from 'xss';
 import { toPositiveNumberOrDefault } from './utils/toPositiveNumberOrDefault.js';
 
 const SCHEMA_FILE = './sql/schema.sql';
@@ -48,7 +47,6 @@ pool.on('error', (err) => {
  * @typedef {Object} Cart
  * @property {string} id - ID of cart
  * @property {Date} created - time of creation
- * @property {Array<Line>} lines - lines in cart
  */
 
 /**
@@ -128,62 +126,6 @@ export async function insertData(insertFile = INSERT_DATA_FILE) {
   return insert;
 }
 
-/**
- * Insert a new cart
- *
- * @param {Line} cart Cart to create.
- * @return {Cart} Cart created, with ID
- */
-export async function insertCart({ productId, quantity }) {
-  const createCartQuery = `
-  INSERT INTO carts.carts DEFAULT VALUES RETURNING id, created;
-  `;
-  try {
-    const result = await query(createCartQuery);
-    if (result && result.rowCount === 1) {
-      const cart = result.rows[0];
-      const cartLines = await insertCartLine({
-        cartId: cart.id,
-        productId,
-        quantity,
-      });
-      if (cartLines) {
-        return { ...cart, lines: [cartLines] };
-      }
-    }
-  } catch (e) {
-    throw new Error('Error inserting cart', e.message);
-  }
-  return null;
-}
-
-/**
- * Insert a cart line
- *
- * @param {Line} line - line to be inserted
- * @returns {Line} inserted line, if created
- */
-export async function insertCartLine({ cartId, productId, quantity }) {
-  const q = `
-    INSERT INTO
-      carts.lines
-      (product_id, cart_id, num_of_products)
-    VALUES
-      ($1, $2, $3)
-    RETURNING product_id, num_of_products
-  `;
-  const values = [xss(productId), xss(cartId), xss(quantity)];
-  try {
-    const result = await query(q, values);
-    console.log(result);
-    if (result && result.rowCount === 1) {
-      return result.rows[0];
-    }
-  } catch (e) {
-    throw new Error('Error inserting cart line', e);
-  }
-  return null;
-}
 export async function end() {
   await pool.end();
 }

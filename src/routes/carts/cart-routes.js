@@ -4,6 +4,7 @@ import { returnResource } from '../../lib/utils/returnResource.js';
 import { validationCheck } from '../../lib/validation-helpers.js';
 import {
   positiveIntValidator,
+  uuidValidator,
   validateResourceExists,
 } from '../../lib/validation.js';
 import {
@@ -19,7 +20,7 @@ router.post('/', catchErrors(postCartRoute));
 
 router.get(
   '/:cartId',
-  // uuid validator
+  uuidValidator('cartId'),
   validateResourceExists(getCartRoute),
   validationCheck,
   returnResource
@@ -27,7 +28,7 @@ router.get(
 
 router.post(
   '/:cartId',
-  // uuid validator
+  uuidValidator('cartId'),
   validateResourceExists(getCartRoute),
   positiveIntValidator('productId'),
   // validate product exists - þegar komin db köll fyrir products
@@ -38,7 +39,7 @@ router.post(
 
 router.delete(
   '/:cartId',
-  // uuid validator
+  uuidValidator('cartId'),
   validateResourceExists(getCartRoute),
   validationCheck,
   catchErrors(deleteCartRoute)

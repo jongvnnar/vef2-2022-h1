@@ -1,6 +1,5 @@
 import { body, param } from 'express-validator';
 import xss from 'xss';
-import { findByUsername } from '../auth/users.js';
 import { findCategoryByTitle } from '../routes/categories/categories.js';
 import { resourceExists } from './validation-helpers.js';
 // Endurnýtum mjög líka validation
@@ -54,6 +53,12 @@ export const categoryDoesNotExistValidator = body('title').custom(
     return Promise.resolve();
   }
 );
+
+export function uuidValidator(idName) {
+  return [
+    param(idName).isUUID(4).withMessage(`${idName} must be a valid UUID`),
+  ];
+}
 
 export const categoryValidator = [
   body('title')

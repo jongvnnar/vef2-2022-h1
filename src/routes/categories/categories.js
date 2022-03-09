@@ -46,7 +46,7 @@ export async function deleteCategory(id) {
   RETURNING *;`;
 
   try {
-    const result = await query(q,[id]);
+    const result = await query(q, [id]);
     return result.rows[0];
   } catch (e) {
     console.error('Gat ekki eytt category');
@@ -112,8 +112,7 @@ export async function getCategory(_, req) {
 }
 
 export async function postCategoryRoute(req, res) {
-
-  const { title  } = req.body;
+  const { title } = req.body;
 
   const result = await createCategory(title);
 
@@ -124,9 +123,8 @@ export async function postCategoryRoute(req, res) {
   return res.status(500).json({ error: 'Server error' });
 }
 export async function patchCategoryRoute(req, res) {
-
-  const { id  } = req.params;
-  const { title  } = req.body;
+  const { id } = req.params;
+  const { title } = req.body;
 
   const result = await updateCategory(title, id);
 
@@ -137,10 +135,9 @@ export async function patchCategoryRoute(req, res) {
   return res.status(500).json({ error: 'Server error' });
 }
 export async function deleteCategoryRoute(req, res) {
+  const { id } = req.params;
 
-  const { id  } = req.params;
-
-  const result = await deleteCategory( id);
+  const result = await deleteCategory(id);
 
   if (result) {
     return res.status(204).json({});
