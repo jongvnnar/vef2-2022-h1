@@ -1,5 +1,6 @@
 import { body, param } from 'express-validator';
 import xss from 'xss';
+import { listCartLines } from '../routes/carts/carts.js';
 import { findCategoryByTitle } from '../routes/categories/categories.js';
 import { resourceExists } from './validation-helpers.js';
 // Endurnýtum mjög líka validation
@@ -42,6 +43,20 @@ export function positiveIntValidator(fieldName) {
       .withMessage(`${fieldName} must be an integer larger than 0`),
   ];
 }
+
+export const lineInCartValidator = param('cartId').custom(
+  async (cartId, { req: { params } = {} }) => {
+    const { id } = params;
+
+    const lines = await listCartLines(cartId);
+    const line = lines.find((l) => l.id === Number(id));
+
+    if (!line) {
+      return Promise.reject(new Error('line not in specified cart'));
+    }
+    return Promise.resolve();
+  }
+);
 
 export const categoryDoesNotExistValidator = body('title').custom(
   async (title) => {

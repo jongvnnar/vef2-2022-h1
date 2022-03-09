@@ -2,14 +2,14 @@ import xss from 'xss';
 import { pagedQuery, query } from '../../lib/db.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
 
-//sækja í gagnagrunn
+// sækja í gagnagrunn
 export async function listCategories(req, res) {
   const { offset = 0, limit = 10 } = req.query;
-  const query = `
+  const q = `
     SELECT * FROM menu.categories
     ORDER BY id ASC
     `;
-  const categories = await pagedQuery(query, [], { offset, limit });
+  const categories = await pagedQuery(q, [], { offset, limit });
   const page = addPageMetadata(
     categories,
     req.path,

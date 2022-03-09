@@ -14,7 +14,7 @@
 
 ## Fannar
 
-- [ ] cart
+- [x] cart
 - [ ] cart tests
 - [x] paging
 - [ ] setja upp a heroku
