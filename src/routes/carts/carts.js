@@ -79,7 +79,7 @@ export async function getCartRoute(_, req) {
   const cart = await listCart(cartId);
   if (!cart) return null;
   const lines = await listCartLines(cartId);
-  return { ...cart, lines};
+  return { ...cart, lines };
 }
 
 export async function postLineRoute(req, res) {

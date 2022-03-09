@@ -1,5 +1,7 @@
 import { body, param } from 'express-validator';
 import xss from 'xss';
+import { findByUsername } from '../auth/users.js';
+import { findCategoryByTitle } from '../routes/categories/categories.js';
 import { resourceExists } from './validation-helpers.js';
 // Endurnýtum mjög líka validation
 
@@ -37,10 +39,31 @@ export function idValidator(idName) {
 export function positiveIntValidator(fieldName) {
   return [
     body(fieldName)
-      .isInt({ min: 1})
+      .isInt({ min: 1 })
       .withMessage(`${fieldName} must be an integer larger than 0`),
   ];
 }
+
+export const categoryDoesNotExistValidator = body('title').custom(
+  async (title) => {
+    const category = await findCategoryByTitle(title);
+
+    if (category) {
+      return Promise.reject(new Error('category already exists'));
+    }
+    return Promise.resolve();
+  }
+);
+
+export const categoryValidator = [
+  body('title')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Titill má ekki vera tómur'),
+  body('title')
+    .isLength({ max: 128 })
+    .withMessage('Titill má að hámarki vera 128 stafir'),
+];
 
 // export const noDuplicateEventsValidator = body('name').custom(async (value) => {
 //   const eventExists = await listEventByName(value);

@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import passport from './auth/passport.js';
 import { router as cartRouter } from './routes/carts/cart-routes.js';
+import { router as categoryRouter } from './routes/categories/categories-routs.js';
 import { router as indexRouter } from './routes/index/index-routes.js';
 import { router as userRouter } from './routes/users/user-routes.js';
 
@@ -31,7 +32,7 @@ app.use((req, res, next) => {
   }
   return next();
 });
-
+app.use('/categories', categoryRouter);
 app.use('/cart', cartRouter);
 app.use('/users', userRouter);
 app.use('/', indexRouter);
