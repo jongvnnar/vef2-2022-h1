@@ -128,7 +128,9 @@ async function addProductDetail(cartLines) {
   for (const line of cartLines) {
     const { id, product_id, quantity } = line;
     // eslint-disable-next-line no-await-in-loop
-    const { title, description, image, category, price } = await listProduct(product_id);
+    const { title, description, image, category, price } = await listProduct(
+      product_id
+    );
     const newLine = {
       id,
       product_id,
@@ -157,7 +159,7 @@ export async function getCartRoute(_, req) {
   if (!cart) return null;
   let lines = await listCartLines(cartId);
   lines = await addProductDetail(lines);
-  return { ...cart, lines};
+  return { ...cart, lines };
 }
 
 export async function getLineRoute(_, req) {

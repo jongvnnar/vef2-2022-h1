@@ -31,6 +31,8 @@ CREATE TABLE  carts.carts(
   id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- á product_id og cart_id að vera einkvæmt??
 CREATE TABLE  carts.lines(
   id SERIAL PRIMARY KEY,
   product_id INTEGER NOT NULL,
