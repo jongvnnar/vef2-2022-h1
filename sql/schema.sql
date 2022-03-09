@@ -32,9 +32,10 @@ CREATE TABLE  carts.carts(
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE  carts.lines(
+  id SERIAL PRIMARY KEY,
   product_id INTEGER NOT NULL,
   cart_id uuid NOT NULL,
-  num_of_products INTEGER CHECK(num_of_products > 0),
+  quantity INTEGER CHECK(quantity > 0),
   FOREIGN KEY (product_id) references menu.products(id) ON DELETE CASCADE,
   FOREIGN KEY (cart_id) REFERENCES carts.carts(id) ON DELETE CASCADE
 );
