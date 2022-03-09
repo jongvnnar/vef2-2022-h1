@@ -75,3 +75,11 @@ export async function currentUserRoute(req, res) {
 
   return res.json(user);
 }
+
+export async function updateCurrentUserRoute(req, res) {
+  const { user: { id } = {} } = req;
+  const user = await findById(id);
+  if (!user) {
+    return res.status(500).json({ 'Server error': 'Unable to login user' });
+  }
+}
