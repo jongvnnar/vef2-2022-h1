@@ -58,7 +58,7 @@ CREATE TYPE  orders.state AS ENUM ('NEW', 'PREPARE', 'COOKING', 'READY','FINISHE
 CREATE TABLE  orders.states(
   id SERIAL PRIMARY KEY,
   order_id uuid NOT NULL UNIQUE,
-  state orders.state NOT NULL,
+  state orders.state NOT NULL DEFAULT 'NEW'::orders.state,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (order_id) REFERENCES orders.orders(id) ON DELETE CASCADE
 );
