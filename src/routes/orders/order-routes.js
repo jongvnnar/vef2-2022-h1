@@ -26,6 +26,27 @@ router.get(
   catchErrors(listAllOrdersRoute)
 );
 
+export const createOrderValidator = [
+  body('name')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Nafn má ekki vera tómt'),
+  body('name')
+    .isLength({ max: 128 })
+    .withMessage('Nafn má að hámarki vera 128 stafir'),
+  body('cart')
+    .isUUID(4)
+    .withMessage('Liður cart verður að vera viðurkennt UUID'),
+  body('cart').custom(async (cart) => {
+    const cartExists = await listCart(cart);
+
+    if (!cartExists) {
+      return Promise.reject(new Error('Cart does not exist'));
+    }
+    return Promise.resolve();
+  }),
+];
+
 // TODO athuga hvort createOrderValidator ætti að vera skipt í tvennt og hvort ég ætti að færa hann
 // inn hingað.
 router.post(
