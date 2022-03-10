@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { query } from '../../lib/db.js';
 
-async function listCart(id) {
+export async function listCart(id) {
   const q = 'SELECT * FROM carts.carts WHERE id = $1';
 
   const result = await query(q, [id]);

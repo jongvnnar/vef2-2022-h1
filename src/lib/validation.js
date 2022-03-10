@@ -1,6 +1,6 @@
 import { body, param } from 'express-validator';
 import xss from 'xss';
-import { listCartLines } from '../routes/carts/carts.js';
+import { listCart, listCartLines } from '../routes/carts/carts.js';
 import { findCategoryByTitle } from '../routes/categories/categories.js';
 import { resourceExists } from './validation-helpers.js';
 // Endurnýtum mjög líka validation
@@ -133,6 +133,27 @@ export function validateResourceExists(fetchResource) {
     param('id').custom(resourceExists(fetchResource)).withMessage('not found'),
   ];
 }
+
+export const createOrderValidator = [
+  body('name')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Nafn má ekki vera tómt'),
+  body('name')
+    .isLength({ max: 128 })
+    .withMessage('Nafn má að hámarki vera 128 stafir'),
+  body('cart')
+    .isUUID(4)
+    .withMessage('Liður cart verður að vera viðurkennt UUID'),
+  body('cart').custom(async (cart) => {
+    const cartExists = await listCart(cart);
+
+    if (!cartExists) {
+      return Promise.reject(new Error('Cart does not exist'));
+    }
+    return Promise.resolve();
+  }),
+];
 
 export function validateResourceNotExists(fetchResource) {
   return [

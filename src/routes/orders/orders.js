@@ -1,5 +1,7 @@
-import { query } from '../../lib/db.js';
-
+import xss from 'xss';
+import { pagedQuery, query } from '../../lib/db.js';
+import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
+import { listCartLines } from '../carts/carts.js';
 async function listOrder(id) {
   const q = 'SELECT * FROM orders.orders WHERE id = $1';
 
@@ -24,30 +26,47 @@ async function listOrderLines(orderId) {
   return [];
 }
 
-async function createOrder() {
+async function createOrder({ cart, name }) {
   const q = `
-    INSERT INTO orders.orders
-    DEFAULT VALUES
-    RETURNING *
+    INSERT INTO orders.orders (name)
+    VALUES ($1)
+    RETURNING id, current_state
   `;
-  const result = await query(q);
-
+  const values = [xss(name)];
+  const result = await query(q, values);
+  const cartLines = await listCartLines(cart);
+  console.log(cartLines);
   if (result && result.rowCount === 1) {
+    if (cartLines && cartLines.length !== 0) {
+      cartLines.forEach(async (cartLine) => {
+        await createOrderLine({
+          orderId: result.rows[0].id,
+          cartId: cartLine.cart_id,
+          productId: cartLine.product_id,
+          quantity: cartLine.quantity,
+        });
+      });
+    }
     return result.rows[0];
   }
 
   return null;
 }
 
-export async function createOrderLine({ productId, cartId, quantity } = {}) {
+export async function createOrderLine({
+  orderId,
+  productId,
+  cartId,
+  quantity,
+} = {}) {
   const q = `
     INSERT INTO orders.lines
-      (product_id, cart_id, num_of_products)
+      (order_id, product_id, cart_id, quantity)
     VALUES
-      ($1, $2, $3)
+      ($1, $2, $3, $4)
     RETURNING *
   `;
-  const values = [productId, cartId, quantity];
+  const values = [xss(orderId), productId, xss(cartId), quantity];
   const result = await query(q, values);
 
   if (result && result.rowCount === 1) {
@@ -57,8 +76,28 @@ export async function createOrderLine({ productId, cartId, quantity } = {}) {
   return null;
 }
 
+export async function listAllOrdersRoute(req, res) {
+  const { offset = 0, limit = 10 } = req.query;
+  const q = `
+  SELECT * FROM orders.orders ORDER BY created DESC
+  `;
+  const orders = await pagedQuery(q, [], { offset, limit });
+  const page = addPageMetadata(
+    orders,
+    req.path,
+    {
+      offset,
+      limit,
+      length: orders.items.length,
+    },
+    req.baseUrl
+  );
+  return res.status(200).json(page);
+}
+
 export async function postOrderRoute(req, res) {
-  const createdOrder = await createOrder();
+  const { cart = '', name = '' } = req.body;
+  const createdOrder = await createOrder({ cart, name });
   if (createdOrder) {
     return res.status(201).json(createdOrder);
   }
@@ -85,16 +124,4 @@ export async function postLineRoute(req, res) {
   }
 
   return res.status(500).json({ error: 'Server error' });
-}
-
-export async function deleteOrderRoute(req, res) {
-  const { params: { orderId } = {} } = req;
-
-  const deleted = await removeOrder(orderId);
-
-  if (deleted) {
-    return res.status(204).json();
-  }
-
-  return res.status(304).json();
 }

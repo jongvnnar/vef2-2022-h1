@@ -4,8 +4,8 @@ import passport from './auth/passport.js';
 import { router as cartRouter } from './routes/carts/cart-routes.js';
 import { router as categoryRouter } from './routes/categories/categories-routs.js';
 import { router as indexRouter } from './routes/index/index-routes.js';
+import { router as orderRouter } from './routes/orders/order-routes.js';
 import { router as userRouter } from './routes/users/user-routes.js';
-
 dotenv.config();
 
 const { PORT: port = 3000, DATABASE_URL: connectionString } = process.env;
@@ -35,6 +35,7 @@ app.use((req, res, next) => {
 app.use('/categories', categoryRouter);
 app.use('/cart', cartRouter);
 app.use('/users', userRouter);
+app.use('/orders', orderRouter);
 app.use('/', indexRouter);
 // cors
 app.use((req, res, next) => {
