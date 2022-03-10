@@ -48,8 +48,7 @@ const createOrderValidator = [
   }),
 ];
 
-// TODO athuga hvort createOrderValidator ætti að vera skipt í tvennt og hvort ég ætti að færa hann
-// inn hingað.
+// TODO athuga hvort createOrderValidator ætti að vera skipt í tvennt
 router.post(
   '/',
   createOrderValidator,
