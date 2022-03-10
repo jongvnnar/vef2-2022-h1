@@ -2,23 +2,36 @@ import xss from 'xss';
 import { pagedQuery, query } from '../../lib/db.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
 import { listCartLines } from '../carts/carts.js';
-async function listOrder(id) {
+
+async function listOrder(orderId) {
   const q = 'SELECT * FROM orders.orders WHERE id = $1';
-
-  const result = await query(q, [id]);
-
-  if (result.rowCount === 1) {
+  const result = await query(q, [orderId]);
+  if (result && result.rowCount === 1) {
     return result.rows[0];
   }
 
   return null;
 }
 
+//TODO uppfæra þetta með product, price og total price.
 async function listOrderLines(orderId) {
-  const q = 'SELECT * FROM orders.lines WHERE order_id = $1';
+  const q =
+    'SELECT product_id, cart_id, quantity FROM orders.lines WHERE order_id = $1';
 
   const result = await query(q, [orderId]);
 
+  if (result) {
+    return result.rows;
+  }
+
+  return [];
+}
+
+async function listOrderStates(orderId) {
+  const q =
+    'SELECT state, created FROM orders.states WHERE order_id = $1 ORDER BY created DESC';
+
+  const result = await query(q, [orderId]);
   if (result) {
     return result.rows;
   }
@@ -49,7 +62,6 @@ async function createOrder({ cart, name }) {
     }
     return result.rows[0];
   }
-
   return null;
 }
 
@@ -113,15 +125,24 @@ export async function getOrderRoute(_, req) {
   return { ...order, lines };
 }
 
-export async function postLineRoute(req, res) {
+// export async function postLineRoute(req, res) {
+//   const { params: { orderId } = {} } = req;
+//   const { productId, quantity } = req.body;
+
+//   const createdLine = await createOrderLine({ productId, orderId, quantity });
+
+//   if (createdLine) {
+//     return res.status(201).json(createdLine);
+//   }
+
+//   return res.status(500).json({ error: 'Server error' });
+// }
+
+export async function listOrderRoute(_, req) {
   const { params: { orderId } = {} } = req;
-  const { productId, quantity } = req.body;
-
-  const createdLine = await createOrderLine({ productId, orderId, quantity });
-
-  if (createdLine) {
-    return res.status(201).json(createdLine);
-  }
-
-  return res.status(500).json({ error: 'Server error' });
+  const order = await listOrder(orderId);
+  if (!order) return null;
+  const lines = await listOrderLines(orderId);
+  const status = await listOrderStates(orderId);
+  return { ...order, lines, status };
 }
