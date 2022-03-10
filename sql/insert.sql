@@ -56,3 +56,26 @@ INSERT INTO menu.products (title, price, description, category, image) VALUES ('
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Peach Perfect', 2890, 'Drambue, Peach Liquor, Elderflower, Cherry Heering & Lime', 3,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Green Is Good', 2790, 'Woodford Reserve, Apple Liquor, Basil, Lemon & Green Apples', 3,'/');
 
+INSERT INTO carts.carts (id) VALUES ('f811f9d0-e860-41c4-adb9-e6339f404c27');
+INSERT INTO carts.carts (id) VALUES ('8b3f8a13-af8c-4fcb-b965-b53a7fd4019b');
+
+INSERT INTO carts.lines (product_id, cart_id, quantity) VALUES (36, 'f811f9d0-e860-41c4-adb9-e6339f404c27', 1);
+INSERT INTO carts.lines (product_id, cart_id, quantity) VALUES (5, 'f811f9d0-e860-41c4-adb9-e6339f404c27', 1);
+INSERT INTO carts.lines (product_id, cart_id, quantity) VALUES (2, 'f811f9d0-e860-41c4-adb9-e6339f404c27', 1);
+
+INSERT INTO carts.lines (product_id, cart_id, quantity) VALUES (6, '8b3f8a13-af8c-4fcb-b965-b53a7fd4019b', 1);
+INSERT INTO carts.lines (product_id, cart_id, quantity) VALUES (9, '8b3f8a13-af8c-4fcb-b965-b53a7fd4019b', 1);
+INSERT INTO carts.lines (product_id, cart_id, quantity) VALUES (30, '8b3f8a13-af8c-4fcb-b965-b53a7fd4019b', 1);
+
+INSERT INTO orders.orders (id, name) VALUES ('b9e8ba22-96ea-4ef7-8c52-272fad6d76f1', 'Pöntun 1');
+INSERT INTO orders.orders (id, name) VALUES ('e7b2a445-aa01-4166-b675-d4c0934b32b0', 'Pöntun 2');
+UPDATE orders.orders SET current_state = 'PREPARE', current_state_created = NOW() WHERE id = 'b9e8ba22-96ea-4ef7-8c52-272fad6d76f1';
+UPDATE orders.orders SET current_state = 'COOKING', current_state_created = NOW() WHERE id = 'b9e8ba22-96ea-4ef7-8c52-272fad6d76f1';
+
+INSERT INTO orders.lines (order_id, product_id, cart_id, quantity) VALUES ('b9e8ba22-96ea-4ef7-8c52-272fad6d76f1',36, 'f811f9d0-e860-41c4-adb9-e6339f404c27', 1);
+INSERT INTO orders.lines (order_id, product_id, cart_id, quantity) VALUES ('b9e8ba22-96ea-4ef7-8c52-272fad6d76f1',5, 'f811f9d0-e860-41c4-adb9-e6339f404c27', 1);
+INSERT INTO orders.lines (order_id, product_id, cart_id, quantity) VALUES ('b9e8ba22-96ea-4ef7-8c52-272fad6d76f1',2, 'f811f9d0-e860-41c4-adb9-e6339f404c27', 1);
+
+INSERT INTO orders.lines (order_id, product_id, cart_id, quantity) VALUES ('e7b2a445-aa01-4166-b675-d4c0934b32b0',6, '8b3f8a13-af8c-4fcb-b965-b53a7fd4019b', 1);
+INSERT INTO orders.lines (order_id, product_id, cart_id, quantity) VALUES ('e7b2a445-aa01-4166-b675-d4c0934b32b0',9, '8b3f8a13-af8c-4fcb-b965-b53a7fd4019b', 1);
+INSERT INTO orders.lines (order_id, product_id, cart_id, quantity) VALUES ('e7b2a445-aa01-4166-b675-d4c0934b32b0',30, '8b3f8a13-af8c-4fcb-b965-b53a7fd4019b', 1);

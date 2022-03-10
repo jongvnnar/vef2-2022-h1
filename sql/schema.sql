@@ -15,6 +15,7 @@ CREATE TABLE  menu.categories(
   id SERIAL PRIMARY KEY,
   title VARCHAR(128) UNIQUE NOT NULL
 );
+
 CREATE TABLE  menu.products(
   id SERIAL PRIMARY KEY,
   title VARCHAR(128) UNIQUE NOT NULL,
@@ -32,7 +33,6 @@ CREATE TABLE  carts.carts(
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- á product_id og cart_id að vera einkvæmt??
 CREATE TABLE  carts.lines(
   id SERIAL PRIMARY KEY,
   product_id INTEGER NOT NULL,
@@ -42,25 +42,65 @@ CREATE TABLE  carts.lines(
   FOREIGN KEY (cart_id) REFERENCES carts.carts(id) ON DELETE CASCADE
 );
 
+CREATE TYPE  orders.state AS ENUM ('NEW', 'PREPARE', 'COOKING', 'READY','FINISHED');
+
 CREATE TABLE  orders.orders(
   id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
+  name VARCHAR(128) NOT NULL,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  name VARCHAR(128) NOT NULL
+  current_state orders.state NOT NULL DEFAULT 'NEW'::orders.state,
+  current_state_created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
 CREATE TABLE  orders.lines(
+  id SERIAL PRIMARY KEY,
+  order_id uuid NOT NULL,
   product_id INTEGER NOT NULL,
   cart_id uuid NOT NULL,
-  num_of_products INTEGER CHECK(num_of_products > 0) NOT NULL,
+  quantity INTEGER CHECK(quantity > 0) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders.orders(id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES menu.products(id) ON DELETE CASCADE,
   FOREIGN KEY (cart_id) REFERENCES carts.carts(id) ON DELETE CASCADE
 );
 
-CREATE TYPE  orders.state AS ENUM ('NEW', 'PREPARE', 'COOKING', 'READY','FINISHED');
 CREATE TABLE  orders.states(
   id SERIAL PRIMARY KEY,
-  order_id uuid NOT NULL UNIQUE,
+  order_id uuid NOT NULL,
   state orders.state NOT NULL DEFAULT 'NEW'::orders.state,
   created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (order_id) REFERENCES orders.orders(id) ON DELETE CASCADE
 );
 
+CREATE OR REPLACE FUNCTION log_states_fnc()
+
+  RETURNS trigger AS
+
+$$
+
+BEGIN
+
+    INSERT INTO orders.states ("order_id", "state", "created")
+
+         VALUES(NEW."id",NEW."current_state",NEW."current_state_created");
+
+
+
+RETURN NEW;
+
+END;
+
+$$
+
+LANGUAGE 'plpgsql';
+
+
+
+CREATE TRIGGER log_states
+
+  AFTER UPDATE OF current_state OR INSERT
+
+  ON orders.orders
+
+  FOR EACH ROW
+
+  EXECUTE PROCEDURE log_states_fnc();
