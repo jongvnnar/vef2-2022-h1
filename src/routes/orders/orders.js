@@ -1,5 +1,6 @@
 import xss from 'xss';
 import { pagedQuery, query } from '../../lib/db.js';
+import { OrderState } from '../../lib/order-state.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
 import { listCartLines } from '../carts/carts.js';
 
@@ -37,6 +38,20 @@ async function listOrderStates(orderId) {
   }
 
   return [];
+}
+
+async function updateOrder({ orderId, newStatus }) {
+  const q = `
+  UPDATE orders.orders
+  SET current_state = $1, current_state_created = NOW()
+  WHERE id = $2 RETURNING id
+  `;
+  const values = [xss(newStatus), xss(orderId)];
+  const result = await query(q, values);
+  if (result && result.rowCount === 1) {
+    return true;
+  }
+  return false;
 }
 
 async function createOrder({ cart, name }) {
@@ -154,4 +169,26 @@ export async function listOrderStateRoute(_, req) {
     return null;
   }
   return states;
+}
+
+export async function postOrderStateRoute(req, res) {
+  const { params: { orderId } = {} } = req;
+  const order = req.resource;
+  if (order) {
+    let newStatus = '';
+    try {
+      newStatus = OrderState.fromString(order.current_state).getNextState()
+        .name;
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+    const result = updateOrder({ orderId, newStatus });
+    if (result) {
+      const newOrder = await listOrder(orderId);
+      const lines = await listOrderLines(orderId);
+      const status = await listOrderStates(orderId);
+      return res.status(200).json({ ...newOrder, lines, status });
+    }
+  }
+  return res.status(500).json({ error: 'Unable to update order status' });
 }

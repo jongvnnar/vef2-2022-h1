@@ -1,10 +1,10 @@
 import express from 'express';
+import { body } from 'express-validator';
 import { requireAdmin, requireAuthentication } from '../../auth/passport.js';
 import { catchErrors } from '../../lib/catch-errors.js';
 import { returnResource } from '../../lib/utils/returnResource.js';
 import { validationCheck } from '../../lib/validation-helpers.js';
 import {
-  createOrderValidator,
   sanitizationMiddleware,
   uuidValidator,
   validateResourceExists,
@@ -15,6 +15,7 @@ import {
   listOrderRoute,
   listOrderStateRoute,
   postOrderRoute,
+  postOrderStateRoute,
 } from './orders.js';
 
 export const router = express.Router();
@@ -26,7 +27,7 @@ router.get(
   catchErrors(listAllOrdersRoute)
 );
 
-export const createOrderValidator = [
+const createOrderValidator = [
   body('name')
     .trim()
     .isLength({ min: 1 })
@@ -74,4 +75,14 @@ router.get(
   validateResourceExists(listOrderStateRoute),
   validationCheck,
   returnResource
+);
+
+router.post(
+  '/:orderId/status',
+  requireAuthentication,
+  requireAdmin,
+  uuidValidator('orderId'),
+  validateResourceExists(listOrderRoute),
+  validationCheck,
+  catchErrors(postOrderStateRoute)
 );
