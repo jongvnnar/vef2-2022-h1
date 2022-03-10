@@ -13,6 +13,7 @@ import {
 import {
   listAllOrdersRoute,
   listOrderRoute,
+  listOrderStateRoute,
   postOrderRoute,
 } from './orders.js';
 
@@ -38,11 +39,18 @@ router.post(
 
 router.get(
   '/:orderId',
-  requireAuthentication,
-  requireAdmin,
   uuidValidator('orderId'),
   validationCheck,
   validateResourceExists(listOrderRoute),
+  validationCheck,
+  returnResource
+);
+
+router.get(
+  '/:orderId/status',
+  uuidValidator('orderId'),
+  validationCheck,
+  validateResourceExists(listOrderStateRoute),
   validationCheck,
   returnResource
 );

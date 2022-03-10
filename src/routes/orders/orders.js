@@ -146,3 +146,12 @@ export async function listOrderRoute(_, req) {
   const status = await listOrderStates(orderId);
   return { ...order, lines, status };
 }
+
+export async function listOrderStateRoute(_, req) {
+  const { params: { orderId } = {} } = req;
+  const states = await listOrderStates(orderId);
+  if (states.length === 0) {
+    return null;
+  }
+  return states;
+}
