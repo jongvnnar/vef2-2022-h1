@@ -4,7 +4,7 @@
 
 - [ ] menu
 - [ ] menu tests
-- [ ] postman collection
+- [x] postman collection
 
 ## Björn burger
 
@@ -21,7 +21,8 @@
 
 ## Jón
 
-- [ ] orders
+- [x] orders
+  - [ ] order lines með auka upplýsingum
 - [ ] orders tests
 - [ ] websockets
 - [ ] users
