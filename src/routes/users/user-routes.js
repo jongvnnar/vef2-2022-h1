@@ -49,10 +49,10 @@ router.post(
 const loginFields = ['username', 'password'];
 router.post(
   '/login',
+  atLeastOneBodyValueValidator(['username', 'email']),
   usernameValidator,
   passwordValidator,
   emailValidator,
-  atLeastOneBodyValueValidator(['username', 'email']),
   usernameOrEmailAndPaswordValidValidator,
   validationCheck,
   xssSanitizationMiddleware(loginFields),
