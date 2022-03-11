@@ -2,6 +2,7 @@ import express from 'express';
 import { requireAdmin, requireAuthentication } from '../../auth/passport.js';
 import {
   emailDoesNotExistValidator,
+  emailValidator,
   passwordValidator,
   usernameAndPaswordValidValidator,
   usernameDoesNotExistValidator,

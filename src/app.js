@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import { WebSocketServer } from 'ws';
 import passport from './auth/passport.js';
 import { router as cartRouter } from './routes/carts/cart-routes.js';
 import { router as categoryRouter } from './routes/categories/categories-routs.js';
@@ -64,6 +65,8 @@ app.use((err, req, res, next) => {
   return res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}/`);
 });
+
+export const wss = new WebSocketServer({ server });
