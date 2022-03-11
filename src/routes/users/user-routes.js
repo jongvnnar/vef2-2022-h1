@@ -4,14 +4,15 @@ import {
   emailDoesNotExistValidator,
   emailValidator,
   passwordValidator,
-  usernameAndPaswordValidValidator,
   usernameDoesNotExistValidator,
+  usernameOrEmailAndPaswordValidValidator,
   usernameValidator,
 } from '../../auth/validation.js';
 import { catchErrors } from '../../lib/catch-errors.js';
 import { returnResource } from '../../lib/utils/returnResource.js';
 import { validationCheck } from '../../lib/validation-helpers.js';
 import {
+  atLeastOneBodyValueValidator,
   idValidator,
   sanitizationMiddleware,
   validateResourceExists,
@@ -50,7 +51,9 @@ router.post(
   '/login',
   usernameValidator,
   passwordValidator,
-  usernameAndPaswordValidValidator,
+  emailValidator,
+  atLeastOneBodyValueValidator(['username', 'email']),
+  usernameOrEmailAndPaswordValidValidator,
   validationCheck,
   xssSanitizationMiddleware(loginFields),
   sanitizationMiddleware(loginFields),

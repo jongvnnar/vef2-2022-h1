@@ -37,7 +37,7 @@ const createOrderValidator = [
     .withMessage('Nafn má að hámarki vera 128 stafir'),
   body('cart')
     .isUUID(4)
-    .withMessage('Liður cart verður að vera viðurkennt UUID')
+    .withMessage('Cart verður að vera viðurkennt UUID')
     .bail()
     .custom(async (cart) => {
       const cartExists = await listCart(cart);

@@ -1,6 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { jwtOptions, tokenOptions } from '../../auth/passport.js';
-import { createUser, findById, findByUsername } from '../../auth/users.js';
+import {
+  createUser,
+  findByEmail,
+  findById,
+  findByUsername,
+} from '../../auth/users.js';
 import { pagedQuery } from '../../lib/db.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
 
@@ -36,12 +41,14 @@ export async function registerRoute(req, res) {
 }
 
 export async function loginRoute(req, res) {
-  const { username } = req.body;
+  const { username, email } = req.body;
 
-  const user = await findByUsername(username);
+  const user = username
+    ? await findByUsername(username)
+    : await findByEmail(email);
 
   if (!user) {
-    console.error('Unable to find user', username);
+    console.error('Unable to find user', username ? username : email);
     return res.status(500).json({});
   }
 
