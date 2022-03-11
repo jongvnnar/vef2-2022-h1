@@ -1,6 +1,7 @@
 import express from 'express';
 import { requireAdmin, requireAuthentication } from '../../auth/passport.js';
 import {
+  emailDoesNotExistValidator,
   passwordValidator,
   usernameAndPaswordValidValidator,
   usernameDoesNotExistValidator,
@@ -29,12 +30,14 @@ import {
 
 export const router = express.Router();
 
-const registrationFields = ['username', 'password', 'name'];
+const registrationFields = ['username', 'email', 'password', 'name'];
 router.post(
   '/register',
   usernameValidator,
   passwordValidator,
+  emailValidator,
   usernameDoesNotExistValidator,
+  emailDoesNotExistValidator,
   validationCheck,
   xssSanitizationMiddleware(registrationFields),
   sanitizationMiddleware(registrationFields),

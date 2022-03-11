@@ -7,6 +7,7 @@ CREATE TABLE  public.users(
   id SERIAL PRIMARY KEY,
   username VARCHAR(128) NOT NULL UNIQUE,
   name VARCHAR(256) NOT NULL,
+  email VARCHAR(256) NOT NULL UNIQUE,
   password VARCHAR(256) NOT NULL,
   admin BOOLEAN DEFAULT false
 );

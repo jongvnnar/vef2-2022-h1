@@ -14,12 +14,28 @@ export const passwordValidator = body('password')
   .isLength({ min: 1, max: 256 })
   .withMessage('password is required, max 256 characters');
 
+export const emailValidator = body('email')
+  .isLength({ min: 1, max: 256 })
+  .isEmail()
+  .withMessage('Email is required, max 256 characters');
+
 export const usernameDoesNotExistValidator = body('username').custom(
   async (username) => {
     const user = await findByUsername(username);
 
     if (user) {
       return Promise.reject(new Error('username already exists'));
+    }
+    return Promise.resolve();
+  }
+);
+
+export const emailDoesNotExistValidator = body('email').custom(
+  async (email) => {
+    const user = await findByEmail(email);
+
+    if (user) {
+      return Promise.reject(new Error('email already exists'));
     }
     return Promise.resolve();
   }

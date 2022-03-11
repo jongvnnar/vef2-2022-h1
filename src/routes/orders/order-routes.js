@@ -37,15 +37,16 @@ const createOrderValidator = [
     .withMessage('Nafn má að hámarki vera 128 stafir'),
   body('cart')
     .isUUID(4)
-    .withMessage('Liður cart verður að vera viðurkennt UUID'),
-  body('cart').custom(async (cart) => {
-    const cartExists = await listCart(cart);
+    .withMessage('Liður cart verður að vera viðurkennt UUID')
+    .bail()
+    .custom(async (cart) => {
+      const cartExists = await listCart(cart);
 
-    if (!cartExists) {
-      return Promise.reject(new Error('Cart does not exist'));
-    }
-    return Promise.resolve();
-  }),
+      if (!cartExists) {
+        return Promise.reject(new Error('Cart does not exist'));
+      }
+      return Promise.resolve();
+    }),
 ];
 
 // TODO athuga hvort createOrderValidator ætti að vera skipt í tvennt

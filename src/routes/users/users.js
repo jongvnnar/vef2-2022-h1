@@ -26,9 +26,9 @@ export async function listUsersRoute(req, res) {
 }
 
 export async function registerRoute(req, res) {
-  const { name, username, password = '' } = req.body;
+  const { name, username, email, password = '' } = req.body;
 
-  const result = await createUser(name, username, password);
+  const result = await createUser(name, username, email, password);
 
   delete result.password;
 
