@@ -7,17 +7,17 @@ import {
   findById,
   findByUsername,
 } from '../../auth/users.js';
-import { pagedQuery } from '../../lib/db.js';
+import { pagedQuery, query } from '../../lib/db.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
 
 export async function listUsersRoute(req, res) {
   const { offset = 0, limit = 10 } = req.query;
-  const query = `
+  const q = `
   SELECT id, name, username, admin
   FROM users
   ORDER BY id ASC
   `;
-  const users = await pagedQuery(query, [], { offset, limit });
+  const users = await pagedQuery(q, [], { offset, limit });
   const page = addPageMetadata(
     users,
     req.path,
@@ -49,7 +49,7 @@ export async function loginRoute(req, res) {
     : await findByEmail(email);
 
   if (!user) {
-    console.error('Unable to find user', username ? username : email);
+    console.error('Unable to find user', username || email);
     return res.status(500).json({});
   }
 
@@ -84,7 +84,7 @@ export async function currentUserRoute(req, res) {
   return res.json(user);
 }
 
-//TODO
+// TODO
 export async function updateCurrentUserRoute(req, res) {
   const { user: { id } = {} } = req;
   const result = await conditionalUpdateUser(id, req.body);

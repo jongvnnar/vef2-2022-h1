@@ -7,6 +7,7 @@ import { router as categoryRouter } from './routes/categories/categories-routs.j
 import { router as indexRouter } from './routes/index/index-routes.js';
 import { router as orderRouter } from './routes/orders/order-routes.js';
 import { router as userRouter } from './routes/users/user-routes.js';
+
 dotenv.config();
 
 const { PORT: port = 3000, DATABASE_URL: connectionString } = process.env;

@@ -91,7 +91,7 @@ export const usernameOrEmailAndPaswordValidValidator = body('password').custom(
         : await findByEmail(email);
       valid = await comparePasswords(password, user.password);
     } catch (e) {
-      console.info(`invalid login attempt for ${username ? username : email}`);
+      console.info(`invalid login attempt for ${username || email}`);
     }
 
     if (!valid) {

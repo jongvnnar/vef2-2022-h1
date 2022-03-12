@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { OrderState } from '../../src/lib/order-state.js';
+import { OrderState } from '../lib/order-state.js';
 /**
  * OrderState enum
  */

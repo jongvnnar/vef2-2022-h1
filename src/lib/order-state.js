@@ -3,9 +3,13 @@
  */
 export class OrderState {
   static new = new OrderState(0);
+
   static prepare = new OrderState(1);
+
   static cooking = new OrderState(2);
+
   static ready = new OrderState(3);
+
   static finished = new OrderState(4);
 
   constructor(val) {

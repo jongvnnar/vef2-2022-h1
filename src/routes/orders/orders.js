@@ -14,7 +14,7 @@ async function listOrder(orderId) {
   return null;
 }
 
-//TODO uppfæra þetta með product, price og total price.
+// TODO uppfæra þetta með product, price og total price.
 async function listOrderLines(orderId) {
   const q =
     'SELECT product_id, cart_id, quantity FROM orders.lines WHERE order_id = $1';
@@ -54,32 +54,6 @@ async function updateOrder({ orderId, newStatus }) {
   return false;
 }
 
-async function createOrder({ cart, name }) {
-  const q = `
-    INSERT INTO orders.orders (name)
-    VALUES ($1)
-    RETURNING id, current_state
-  `;
-  const values = [xss(name)];
-  const result = await query(q, values);
-  const cartLines = await listCartLines(cart);
-  console.log(cartLines);
-  if (result && result.rowCount === 1) {
-    if (cartLines && cartLines.length !== 0) {
-      cartLines.forEach(async (cartLine) => {
-        await createOrderLine({
-          orderId: result.rows[0].id,
-          cartId: cartLine.cart_id,
-          productId: cartLine.product_id,
-          quantity: cartLine.quantity,
-        });
-      });
-    }
-    return result.rows[0];
-  }
-  return null;
-}
-
 export async function createOrderLine({
   orderId,
   productId,
@@ -100,6 +74,31 @@ export async function createOrderLine({
     return result.rows[0];
   }
 
+  return null;
+}
+
+async function createOrder({ cart, name }) {
+  const q = `
+    INSERT INTO orders.orders (name)
+    VALUES ($1)
+    RETURNING id, current_state
+  `;
+  const values = [xss(name)];
+  const result = await query(q, values);
+  const cartLines = await listCartLines(cart);
+  if (result && result.rowCount === 1) {
+    if (cartLines && cartLines.length !== 0) {
+      cartLines.forEach(async (cartLine) => {
+        await createOrderLine({
+          orderId: result.rows[0].id,
+          cartId: cartLine.cart_id,
+          productId: cartLine.product_id,
+          quantity: cartLine.quantity,
+        });
+      });
+    }
+    return result.rows[0];
+  }
   return null;
 }
 

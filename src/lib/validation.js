@@ -62,16 +62,6 @@ export const categoryValidator = [
     .withMessage('Titill má að hámarki vera 128 stafir'),
 ];
 
-// export const noDuplicateEventsValidator = body('name').custom(async (value) => {
-//   const eventExists = await listEventByName(value);
-//   if (eventExists) {
-//     return Promise.reject(
-//       new Error('Viðburður með þessu nafni er nú þegar til')
-//     );
-//   }
-//   return Promise.resolve();
-// });
-
 // Viljum keyra sér og með validation, ver gegn „self XSS“
 export function xssSanitizationMiddleware(fields) {
   return fields.map((field) => body(field).customSanitizer((v) => xss(v)));
@@ -123,5 +113,5 @@ export function validateResourceNotExists(fetchResource) {
 export const validateState = body('status')
   .isIn(['NEW', 'PREPARE', 'COOKING', 'READY', 'FINISHED'])
   .withMessage(
-    `Status must be one of 'NEW', 'PREPARE','COOKING', 'READY', 'FINISHED'`
+    'Status must be one of \'NEW\', \'PREPARE\',\'COOKING\', \'READY\', \'FINISHED\''
   );

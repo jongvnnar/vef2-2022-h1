@@ -98,7 +98,7 @@ export async function conditionalUpdateUser(id, values) {
     hashedPassword = await bcrypt.hash(password, parseInt(bcryptRounds, 10));
   }
 
-  //https://medium.com/developer-rants/conditional-update-in-postgresql-a27ddb5dd35
+  // https://medium.com/developer-rants/conditional-update-in-postgresql-a27ddb5dd35
   const q = `
   UPDATE users SET
   name = COALESCE(NULLIF($1, ''), name),
@@ -119,7 +119,7 @@ export async function conditionalUpdateUser(id, values) {
   return null;
 }
 
-//TODO REMOVE?
+// TODO REMOVE?
 export async function listUsers() {
   const q = `
   SELECT id, name, email, username, admin FROM users ORDER BY id ASC;

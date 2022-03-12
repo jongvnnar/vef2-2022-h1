@@ -11,6 +11,7 @@ import {
   validateState,
   xssSanitizationMiddleware,
 } from '../../lib/validation.js';
+import { listCart } from '../carts/carts.js';
 import {
   listAllOrdersRoute,
   listOrderRoute,
