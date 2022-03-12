@@ -11,7 +11,6 @@ import { router as userRouter } from './routes/users/user-routes.js';
 dotenv.config();
 
 const { PORT: port = 3000, DATABASE_URL: connectionString } = process.env;
-
 if (!connectionString) {
   console.error('Vantar gögn í env');
   process.exit(1);
