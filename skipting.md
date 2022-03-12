@@ -25,6 +25,6 @@
   - [ ] order lines með auka upplýsingum
 - [ ] orders tests
 - [ ] websockets
-- [ ] users
+- [x] users
 - [ ] users tests
 - [x] index-route
