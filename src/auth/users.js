@@ -90,6 +90,35 @@ export async function createUser(name, username, email, password) {
   return null;
 }
 
+export async function conditionalUpdateUser(id, values) {
+  if (values.length === 0) return null;
+  const { email = '', password = '', username = '', name = '' } = values;
+  let hashedPassword = '';
+  if (password) {
+    hashedPassword = await bcrypt.hash(password, parseInt(bcryptRounds, 10));
+  }
+
+  //https://medium.com/developer-rants/conditional-update-in-postgresql-a27ddb5dd35
+  const q = `
+  UPDATE users SET
+  name = COALESCE(NULLIF($1, ''), name),
+  email = COALESCE(NULLIF($2, ''), email),
+  username = COALESCE(NULLIF($3, ''), username),
+  password = COALESCE(NULLIF($4, ''), password)
+  WHERE id = $5
+  RETURNING name, email, username;
+  `;
+  const vals = [xss(name), xss(email), xss(username), hashedPassword, xss(id)];
+  try {
+    const result = await query(q, vals);
+    return result.rows[0];
+  } catch (e) {
+    console.error('Gat ekki uppfært notanda');
+  }
+
+  return null;
+}
+
 //TODO REMOVE?
 export async function listUsers() {
   const q = `

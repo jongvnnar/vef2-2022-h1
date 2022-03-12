@@ -8,6 +8,7 @@ import {
   sanitizationMiddleware,
   uuidValidator,
   validateResourceExists,
+  validateState,
   xssSanitizationMiddleware,
 } from '../../lib/validation.js';
 import {
@@ -81,6 +82,7 @@ router.post(
   '/:orderId/status',
   requireAuthentication,
   requireAdmin,
+  validateState,
   uuidValidator('orderId'),
   validateResourceExists(listOrderRoute),
   validationCheck,

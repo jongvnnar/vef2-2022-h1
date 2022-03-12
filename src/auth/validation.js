@@ -3,30 +3,57 @@ import { LoginError } from './login-error.js';
 import { comparePasswords, findByEmail, findByUsername } from './users.js';
 
 const isLoginAllowAsOptional = (value, { req }) => {
-  if (!value && req.method === 'POST' && req.path === '/login') {
+  if (
+    !value &&
+    typeof value !== 'string' &&
+    req.method === 'POST' &&
+    req.path === '/login'
+  ) {
+    return false;
+  }
+  return true;
+};
+
+const isUpdateAllowAsOptional = (value, { req }) => {
+  if (
+    !value &&
+    typeof value !== 'string' &&
+    req.method === 'PATCH' &&
+    req.path === '/me'
+  ) {
     return false;
   }
   return true;
 };
 
 export const usernameValidator = body('username')
+  .if(isUpdateAllowAsOptional)
   .if(isLoginAllowAsOptional)
+  .trim()
   .isLength({ min: 1, max: 64 })
-  .withMessage('username is required, max 64 characters');
+  .withMessage('username must be at least 1 character, max 64 characters');
 
 export const nameValidator = body('name')
+  .if(isUpdateAllowAsOptional)
+  .trim()
   .isLength({ min: 1, max: 64 })
-  .withMessage('name is required, max 64 characters');
+  .withMessage('name must be at least 1 character, max 64 characters');
 
 export const passwordValidator = body('password')
+  .if(isUpdateAllowAsOptional)
+  .trim()
   .isLength({ min: 1, max: 256 })
-  .withMessage('password is required, max 256 characters');
+  .withMessage('password must be at least 1 character, max 256 characters');
 
 export const emailValidator = body('email')
+  .if(isUpdateAllowAsOptional)
   .if(isLoginAllowAsOptional)
+  .trim()
   .isLength({ min: 1, max: 256 })
   .isEmail()
-  .withMessage('Email must be valid email and is required, max 256 characters');
+  .withMessage(
+    'Email must be valid email and must be at least 1 character, max 256 characters'
+  );
 
 export const usernameDoesNotExistValidator = body('username').custom(
   async (username) => {
