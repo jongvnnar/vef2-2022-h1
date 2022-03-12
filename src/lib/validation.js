@@ -5,29 +5,6 @@ import { findCategoryByTitle } from '../routes/categories/categories.js';
 import { resourceExists } from './validation-helpers.js';
 // Endurnýtum mjög líka validation
 
-export function registrationValidationMiddleware(textField) {
-  return [
-    body('name')
-      .trim()
-      .isLength({ min: 1 })
-      .withMessage('Nafn má ekki vera tómt'),
-    body('name')
-      .isLength({ max: 64 })
-      .withMessage('Nafn má að hámarki vera 64 stafir'),
-    body(textField)
-      .isLength({ max: 400 })
-      .withMessage(
-        `${
-          textField === 'comment' ? 'Athugasemd' : 'Lýsing'
-        } má að hámarki vera 400 stafir`
-      ),
-  ];
-}
-
-export const bookingValidationMiddleware = body('comment')
-  .isLength({ max: 400 })
-  .withMessage('Athugasemd má að hámarki vera 400 stafir.');
-
 export function idValidator(idName) {
   return [
     param(idName)
@@ -142,3 +119,9 @@ export function validateResourceNotExists(fetchResource) {
       .withMessage('already exists'),
   ];
 }
+
+export const validateState = body('status')
+  .isIn(['NEW', 'PREPARE', 'COOKING', 'READY', 'FINISHED'])
+  .withMessage(
+    `Status must be one of 'NEW', 'PREPARE','COOKING', 'READY', 'FINISHED'`
+  );

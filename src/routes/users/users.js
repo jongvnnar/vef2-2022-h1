@@ -1,6 +1,12 @@
 import jwt from 'jsonwebtoken';
 import { jwtOptions, tokenOptions } from '../../auth/passport.js';
-import { createUser, findById, findByUsername } from '../../auth/users.js';
+import {
+  conditionalUpdateUser,
+  createUser,
+  findByEmail,
+  findById,
+  findByUsername,
+} from '../../auth/users.js';
 import { pagedQuery } from '../../lib/db.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
 
@@ -26,9 +32,9 @@ export async function listUsersRoute(req, res) {
 }
 
 export async function registerRoute(req, res) {
-  const { name, username, password = '' } = req.body;
+  const { name, username, email, password = '' } = req.body;
 
-  const result = await createUser(name, username, password);
+  const result = await createUser(name, username, email, password);
 
   delete result.password;
 
@@ -36,12 +42,14 @@ export async function registerRoute(req, res) {
 }
 
 export async function loginRoute(req, res) {
-  const { username } = req.body;
+  const { username, email } = req.body;
 
-  const user = await findByUsername(username);
+  const user = username
+    ? await findByUsername(username)
+    : await findByEmail(email);
 
   if (!user) {
-    console.error('Unable to find user', username);
+    console.error('Unable to find user', username ? username : email);
     return res.status(500).json({});
   }
 
@@ -79,8 +87,41 @@ export async function currentUserRoute(req, res) {
 //TODO
 export async function updateCurrentUserRoute(req, res) {
   const { user: { id } = {} } = req;
-  const user = await findById(id);
-  if (!user) {
-    return res.status(500).json({ 'Server error': 'Unable to login user' });
+  const result = await conditionalUpdateUser(id, req.body);
+  if (result) {
+    return res.status(200).json(result);
   }
+  return res.status(500).json({ 'Server error': 'Unable to update user' });
+}
+
+export async function updateUserRoute(req, res) {
+  const {
+    body: { admin } = {},
+    params: { userId },
+  } = req;
+
+  try {
+    const updatedUser = await query(
+      `
+        UPDATE
+          users
+        SET
+          admin = $1,
+          updated = current_timestamp
+        WHERE
+          id = $2
+        RETURNING
+          id, username, email, admin, created, updated
+      `,
+      [admin, userId]
+    );
+    return res.status(200).json(updatedUser);
+  } catch (e) {
+    console.error(
+      `unable to change admin to "${admin}" for user "${userId}"`,
+      e
+    );
+  }
+
+  return res.status(500).json(null);
 }
