@@ -1,28 +1,36 @@
 import express from 'express';
+import { requireAdmin, requireAuthentication } from '../../auth/passport.js';
+import { catchErrors } from '../../lib/catch-errors.js';
 import { returnResource } from '../../lib/utils/returnResource.js';
 import { validationCheck } from '../../lib/validation-helpers.js';
+import { idValidator, validateResourceExists } from '../../lib/validation.js';
+import {
+  deleteMenuItemRoute,
+  getMenuItem,
+  listMenuItems,
+  patchMenuItemRoute,
+  postMenuItemRoute
+} from './menus.js';
+
 
 export const router = express.Router();
 
 // Add params category and search
 router.get(
   '/',
-  validationCheck,
-  validateResourceExists(getMenuRoute),
-  validationCheck,
-  returnResource
+  catchErrors(listMenuItems)
 );
 
 router.post('/',
   requireAuthentication,
   requireAdmin,
-  catchErrors(postMenuRoute));
+  catchErrors(postMenuItemRoute));
 
 router.get(
   '/:id',
-  uuidValidator('menuId'),
+  idValidator('id'),
   validationCheck,
-  validateResourceExists(getMenuRoute),
+  validateResourceExists(getMenuItem),
   validationCheck,
   returnResource
 );
@@ -31,12 +39,11 @@ router.patch(
   '/:id',
   requireAuthentication,
   requireAdmin,
-  uuidValidator('cartId'),
   idValidator('id'),
   validationCheck,
-  validateResourceExists(getMenuRoute),
+  validateResourceExists(patchMenuItemRoute),
   validationCheck,
-  catchErrors(patchMenuRoute)
+  catchErrors(patchMenuItemRoute)
 );
 
 router.delete(
@@ -44,7 +51,7 @@ router.delete(
   requireAuthentication,
   requireAdmin,
   idValidator('id'),
-  validateResourceExists(getMenuRoute),
+  validateResourceExists(deleteMenuItemRoute),
   validationCheck,
-  catchErrors(deleteMenuRoute)
+  catchErrors(deleteMenuItemRoute)
 );

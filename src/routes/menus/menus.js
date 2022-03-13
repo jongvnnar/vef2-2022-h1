@@ -106,6 +106,7 @@ export async function deleteMenuItem(id) {
 }
 
 // asdfasd
+
 export async function getMenuItem(_, req) {
   const { params: { id } = {} } = req;
   const category = await findMenuItemById(id);
