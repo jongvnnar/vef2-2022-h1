@@ -1,6 +1,11 @@
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { createSchema, dropSchema, end, insertData } from '../lib/db';
-import { deleteAndParse, fetchAndParse, patchAndParse, postAndParse } from './utils';
+import {
+  deleteAndParse,
+  fetchAndParse,
+  patchAndParse,
+  postAndParse
+} from './utils';
 
 describe('carts', () => {
   beforeAll(async () => {
@@ -20,7 +25,9 @@ describe('carts', () => {
   });
 
   test('GET /cart/:cartid returns cart with lines', async () => {
-    const { result: { id } } = await postAndParse('/cart', null);
+    const {
+      result: { id },
+    } = await postAndParse('/cart', null);
 
     const { result, status } = await fetchAndParse(`/cart/${id}`);
 
@@ -31,17 +38,19 @@ describe('carts', () => {
 
   test('GET /cart/:cartid returns cart with lines containing product details', async () => {
     await insertData();
-    const { result: { id } } = await postAndParse('/cart', null);
+    const {
+      result: { id },
+    } = await postAndParse('/cart', null);
 
     const line = {
       product: 1,
-      quantity: 4
+      quantity: 4,
     };
     await postAndParse(`/cart/${id}`, line);
 
     const { result, status } = await fetchAndParse(`/cart/${id}`);
 
-    const {lines} = result;
+    const { lines } = result;
 
     expect(status).toBe(200);
     expect(lines[0].product_id).toBe(line.product);
@@ -54,11 +63,13 @@ describe('carts', () => {
 
   test('POST /cart/:cartid add line to a cart', async () => {
     await insertData();
-    const { result: { id } } = await postAndParse('/cart', null);
+    const {
+      result: { id },
+    } = await postAndParse('/cart', null);
 
     const line = {
       product: 1,
-      quantity: 4
+      quantity: 4,
     };
     const { result, status } = await postAndParse(`/cart/${id}`, line);
 
@@ -70,10 +81,12 @@ describe('carts', () => {
 
   test('POST /cart/:cartid add line to a cart requires product', async () => {
     await insertData();
-    const { result: { id } } = await postAndParse('/cart', null);
+    const {
+      result: { id },
+    } = await postAndParse('/cart', null);
 
     const line = {
-      quantity: 4
+      quantity: 4,
     };
     const { status } = await postAndParse(`/cart/${id}`, line);
 
@@ -82,10 +95,12 @@ describe('carts', () => {
 
   test('POST /cart/:cartid add line to a cart requires quantity', async () => {
     await insertData();
-    const { result: { id } } = await postAndParse('/cart', null);
+    const {
+      result: { id },
+    } = await postAndParse('/cart', null);
 
     const line = {
-      product: 1
+      product: 1,
     };
     const { status } = await postAndParse(`/cart/${id}`, line);
 
@@ -94,11 +109,13 @@ describe('carts', () => {
 
   test('POST /cart/:cartid add line to a cart requires quantity to be a positive int', async () => {
     await insertData();
-    const { result: { id } } = await postAndParse('/cart', null);
+    const {
+      result: { id },
+    } = await postAndParse('/cart', null);
 
     const line = {
       product: 1,
-      quantity: -4
+      quantity: -4,
     };
     const { status } = await postAndParse(`/cart/${id}`, line);
 
@@ -107,11 +124,13 @@ describe('carts', () => {
 
   test('POST /cart/:cartid add line to a cart requires product to be a positive int', async () => {
     await insertData();
-    const { result: { id } } = await postAndParse('/cart', null);
+    const {
+      result: { id },
+    } = await postAndParse('/cart', null);
 
     const line = {
       product: 'od',
-      quantity: 4
+      quantity: 4,
     };
     const { status } = await postAndParse(`/cart/${id}`, line);
 
@@ -119,7 +138,9 @@ describe('carts', () => {
   });
 
   test('DELETE /cart/:cartId deletes an existing cart', async () => {
-    const { result: { id } } = await postAndParse('/cart', null);
+    const {
+      result: { id },
+    } = await postAndParse('/cart', null);
 
     const { status } = await deleteAndParse(`/cart/${id}`, null);
 
@@ -136,15 +157,21 @@ describe('carts', () => {
 
   test('GET /cart/:cartId/lines/:id returns a line in cart', async () => {
     await insertData();
-    const { result: { id: cartId } } = await postAndParse('/cart', null);
+    const {
+      result: { id: cartId },
+    } = await postAndParse('/cart', null);
 
     const line = {
       product: 1,
-      quantity: 4
+      quantity: 4,
     };
-    const { result: { id } } = await postAndParse(`/cart/${cartId}`, line);
+    const {
+      result: { id },
+    } = await postAndParse(`/cart/${cartId}`, line);
 
-    const { result, status } = await fetchAndParse(`/cart/${cartId}/line/${id}`);
+    const { result, status } = await fetchAndParse(
+      `/cart/${cartId}/line/${id}`
+    );
 
     expect(status).toBe(200);
     expect(result.product_id).toBe(line.product);
@@ -157,18 +184,25 @@ describe('carts', () => {
 
   test('PATCH /cart/:cartId/lines/:id updates a line\'s quantity', async () => {
     await insertData();
-    const { result: { id: cartId } } = await postAndParse('/cart', null);
+    const {
+      result: { id: cartId },
+    } = await postAndParse('/cart', null);
 
     const line = {
       product: 1,
-      quantity: 4
+      quantity: 4,
     };
-    const { result: { id } } = await postAndParse(`/cart/${cartId}`, line);
+    const {
+      result: { id },
+    } = await postAndParse(`/cart/${cartId}`, line);
 
     const updatedLine = {
-      quantity: 6
+      quantity: 6,
     };
-    const { result, status } = await patchAndParse(`/cart/${cartId}/line/${id}`, updatedLine);
+    const { result, status } = await patchAndParse(
+      `/cart/${cartId}/line/${id}`,
+      updatedLine
+    );
 
     expect(status).toBe(200);
     expect(result.id).toBe(id);
@@ -179,31 +213,42 @@ describe('carts', () => {
 
   test('PATCH /cart/:cartId/lines/:id refuses to update if not valid quantity', async () => {
     await insertData();
-    const { result: { id: cartId } } = await postAndParse('/cart', null);
+    const {
+      result: { id: cartId },
+    } = await postAndParse('/cart', null);
 
     const line = {
       product: 1,
-      quantity: 4
+      quantity: 4,
     };
-    const { result: { id } } = await postAndParse(`/cart/${cartId}`, line);
+    const {
+      result: { id },
+    } = await postAndParse(`/cart/${cartId}`, line);
 
     const updatedLine = {
-      quantity: 'sdf'
+      quantity: 'sdf',
     };
-    const { status } = await patchAndParse(`/cart/${cartId}/line/${id}`, updatedLine);
+    const { status } = await patchAndParse(
+      `/cart/${cartId}/line/${id}`,
+      updatedLine
+    );
 
     expect(status).toBe(400);
   });
 
   test('DELETE /cart/:cartId/lines/:id deletes line from cart', async () => {
     await insertData();
-    const { result: { id: cartId } } = await postAndParse('/cart', null);
+    const {
+      result: { id: cartId },
+    } = await postAndParse('/cart', null);
 
     const line = {
       product: 1,
-      quantity: 4
+      quantity: 4,
     };
-    const { result: { id } } = await postAndParse(`/cart/${cartId}`, line);
+    const {
+      result: { id },
+    } = await postAndParse(`/cart/${cartId}`, line);
 
     const { status } = await deleteAndParse(`/cart/${cartId}/line/${id}`, null);
 

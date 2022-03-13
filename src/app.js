@@ -3,7 +3,7 @@ import express from 'express';
 import { WebSocketServer } from 'ws';
 import passport from './auth/passport.js';
 import { router as cartRouter } from './routes/carts/cart-routes.js';
-import { router as categoryRouter } from './routes/categories/categories-routs.js';
+import { router as categoryRouter } from './routes/categories/categories-routes.js';
 import { router as indexRouter } from './routes/index/index-routes.js';
 import { router as orderRouter } from './routes/orders/order-routes.js';
 import { router as userRouter } from './routes/users/user-routes.js';
