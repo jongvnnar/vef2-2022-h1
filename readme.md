@@ -1,5 +1,7 @@
 # Vefforritun 2, 2021, hópverkefni 1
 
+Appið er keyrandi á [heroku](https://vef2-2022-h1.herokuapp.com/).
+
 [Kynning í fyrirlestri](https://youtu.be/W0k01_KRE4I).
 
 ATH. notandi á gagnagrunn verður að vera með CREATE role fyrir gagnagrunninn svo uuid virki.
