@@ -1,4 +1,6 @@
+import WebSocket from 'ws';
 import xss from 'xss';
+import { orderWss } from '../../app.js';
 import { pagedQuery, query } from '../../lib/db.js';
 import { OrderState } from '../../lib/order-state.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
@@ -171,7 +173,7 @@ export async function listOrderStateRoute(_, req) {
 }
 
 export async function postOrderStateRoute(req, res) {
-  const { params: { orderId } = {} } = req;
+  const { params: { orderId } = {}, body: { status } = {} } = req;
   const order = req.resource;
   if (order) {
     let newStatus = '';
@@ -181,8 +183,20 @@ export async function postOrderStateRoute(req, res) {
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
-    const result = updateOrder({ orderId, newStatus });
+    if (status !== newStatus) {
+      return res.status(400).json({
+        error: `Unable to go from ${order.current_state} to ${status}, next status must be ${newStatus}`,
+      });
+    }
+    const result = await updateOrder({ orderId, newStatus });
     if (result) {
+      //send to websocket client
+      orderWss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({ status: newStatus }));
+        }
+      });
+
       const newOrder = await listOrder(orderId);
       const lines = await listOrderLines(orderId);
       const status = await listOrderStates(orderId);

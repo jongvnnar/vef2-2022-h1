@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { WebSocketServer } from 'ws';
 import passport from './auth/passport.js';
 import { router as cartRouter } from './routes/carts/cart-routes.js';
 import { router as categoryRouter } from './routes/categories/categories-routes.js';
@@ -8,6 +7,7 @@ import { router as indexRouter } from './routes/index/index-routes.js';
 import { router as menuRouter } from './routes/menus/menu-routes.js';
 import { router as orderRouter } from './routes/orders/order-routes.js';
 import { router as userRouter } from './routes/users/user-routes.js';
+import { ordersWebsocketServer } from './websockets/websocket-orders.js';
 
 dotenv.config();
 
@@ -71,4 +71,18 @@ const server = app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}/`);
 });
 
-export const wss = new WebSocketServer({ server });
+export const orderWss = ordersWebsocketServer();
+server.on('upgrade', function upgrade(request, socket, head) {
+  const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+  if (pathname.startsWith('/orders/')) {
+    orderWss.handleUpgrade(request, socket, head, function done(ws) {
+      orderWss.emit('connection', ws, request);
+    });
+  } else if (pathname === '/bar') {
+    wss2.handleUpgrade(request, socket, head, function done(ws) {
+      wss2.emit('connection', ws, request);
+    });
+  } else {
+    socket.destroy();
+  }
+});
