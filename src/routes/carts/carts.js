@@ -150,7 +150,7 @@ async function addProductDetail(cartLines) {
 export async function postCartRoute(req, res) {
   const createdCart = await createCart();
 
-  return res.json(createdCart);
+  return res.status(201).json(createdCart);
 }
 
 export async function getCartRoute(_, req) {

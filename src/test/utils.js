@@ -44,8 +44,16 @@ export async function methodAndParse(method, path, data = null, token = null) {
   }
 
   const result = await fetch(url, options);
+
+  let response;
+  try {
+    response = await result.json();
+  } catch (e) {
+    response = {};
+  }
+
   return {
-    result: await result.json(),
+    result: response,
     status: result.status,
   };
 }
