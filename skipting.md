@@ -22,9 +22,9 @@
 ## Jón
 
 - [x] orders
-  - [ ] order lines með auka upplýsingum
+  - [ ] order lines með auka upplýsingum um hluti í körfu og verð
 - [ ] orders tests
-- [ ] websockets
+- [x] websockets
 - [x] users
 - [ ] users tests
 - [x] index-route
