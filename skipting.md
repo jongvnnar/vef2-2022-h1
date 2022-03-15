@@ -22,7 +22,7 @@
 ## Jón
 
 - [x] orders
-  - [ ] order lines með auka upplýsingum um hluti í körfu og verð
+  - [ ] uppfæra auka upplýsingar í order lines svo það sé ekki beint upp úr carts
 - [ ] orders tests
 - [x] websockets
 - [x] users
