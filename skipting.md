@@ -22,7 +22,6 @@
 ## Jón
 
 - [x] orders
-  - [ ] uppfæra auka upplýsingar í order lines svo það sé ekki beint upp úr carts
 - [ ] orders tests
 - [x] websockets
 - [x] users
