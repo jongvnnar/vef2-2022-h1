@@ -110,7 +110,7 @@ async function removeCartLine(id) {
 }
 
 // nota frekar það fall sem mun koma í products
-async function listProduct(id) {
+export async function listProduct(id) {
   const q = 'SELECT * FROM menu.products WHERE id = $1';
 
   const result = await query(q, [id]);

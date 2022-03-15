@@ -4,7 +4,7 @@ import { adminWss, orderWss } from '../../app.js';
 import { pagedQuery, query } from '../../lib/db.js';
 import { OrderState } from '../../lib/order-state.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
-import { listCartLines } from '../carts/carts.js';
+import { listCartLines, listProduct } from '../carts/carts.js';
 
 async function listOrder(orderId) {
   const q = 'SELECT * FROM orders.orders WHERE id = $1';
@@ -19,6 +19,30 @@ async function listOrder(orderId) {
   return null;
 }
 
+async function addProductDetail(lines) {
+  const result = [];
+  for (const line of lines) {
+    const { cart_id, product_id, quantity } = line;
+    // eslint-disable-next-line no-await-in-loop
+    const { title, description, image, category, price } = await listProduct(
+      product_id
+    );
+    const newLine = {
+      cart_id,
+      product_id,
+      title,
+      description,
+      image,
+      category,
+      quantity,
+      price,
+      total: price * quantity,
+    };
+    result.push(newLine);
+  }
+  return result;
+}
+
 // TODO uppfæra þetta með product, price og total price.
 async function listOrderLines(orderId) {
   const q =
@@ -27,7 +51,7 @@ async function listOrderLines(orderId) {
   const result = await query(q, [orderId]);
 
   if (result) {
-    return result.rows;
+    return addProductDetail(result.rows);
   }
 
   return [];

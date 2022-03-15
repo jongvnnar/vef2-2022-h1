@@ -17,7 +17,7 @@
 - [x] cart
 - [x] cart tests
 - [x] paging
-- [ ] setja upp a heroku
+- [x] setja upp a heroku
 
 ## Jón
 
