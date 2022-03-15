@@ -1,4 +1,5 @@
 import { WebSocketServer } from 'ws';
+import { OrderState } from '../lib/order-state.js';
 import { listOrderRoute } from '../routes/orders/orders.js';
 export function ordersWebsocketServer() {
   const wss = new WebSocketServer({ noServer: true });
@@ -14,6 +15,10 @@ export function ordersWebsocketServer() {
       ws.send(
         JSON.stringify({ error: `Order with uuid '${orderId}' does not exist` })
       );
+      ws.close();
+    }
+    if (order.current_state === OrderState.finished.name) {
+      ws.send(JSON.stringify({ error: 'Order has already finished' }));
       ws.close();
     }
     ws.send(JSON.stringify(order));

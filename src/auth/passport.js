@@ -1,7 +1,7 @@
+import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { findById } from './users.js';
-
 /**
  * Passport stillingar og middleware til að athuga hvort notandi sé innsrkáður
  * og/eða stjórnandi.
@@ -38,6 +38,28 @@ export function addUserIfAuthenticated(req, res, next) {
 
     return next();
   })(req, res, next);
+}
+
+export async function websocketAuth(req) {
+  const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+  if (!token) {
+    return { error: 'Authorization needed' };
+  }
+  let args = {};
+  jwt.verify(token, jwtSecret, (err, data) => {
+    args.error = err?.message;
+    args.data = data;
+  });
+  if (args.data && args.data.id) {
+    const user = await findById(args.data.id);
+    if (!user) {
+      args.error = 'user not found';
+    }
+    if (!user.admin) {
+      args.error = 'inssufficient authorization';
+    }
+  }
+  return args;
 }
 
 export function requireAuthentication(req, res, next) {

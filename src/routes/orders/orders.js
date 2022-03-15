@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
 import xss from 'xss';
-import { orderWss } from '../../app.js';
+import { adminWss, orderWss } from '../../app.js';
 import { pagedQuery, query } from '../../lib/db.js';
 import { OrderState } from '../../lib/order-state.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
@@ -10,7 +10,10 @@ async function listOrder(orderId) {
   const q = 'SELECT * FROM orders.orders WHERE id = $1';
   const result = await query(q, [orderId]);
   if (result && result.rowCount === 1) {
-    return result.rows[0];
+    const order = result.rows[0];
+    const lines = await listOrderLines(orderId);
+    const status = await listOrderStates(orderId);
+    return { ...order, lines, status };
   }
 
   return null;
@@ -127,6 +130,14 @@ export async function postOrderRoute(req, res) {
   const { cart = '', name = '' } = req.body;
   const createdOrder = await createOrder({ cart, name });
   if (createdOrder) {
+    //send new orders to admin websocket
+    adminWss.clients.forEach(async (client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(await listOrder(createdOrder.id)));
+      }
+    });
+
+    //return created order
     return res.status(201).json(createdOrder);
   }
 
@@ -190,7 +201,7 @@ export async function postOrderStateRoute(req, res) {
     }
     const result = await updateOrder({ orderId, newStatus });
     if (result) {
-      //send to websocket client
+      //send to websocket client for regular users
       orderWss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({ status: newStatus }));
@@ -198,9 +209,15 @@ export async function postOrderStateRoute(req, res) {
       });
 
       const newOrder = await listOrder(orderId);
-      const lines = await listOrderLines(orderId);
-      const status = await listOrderStates(orderId);
-      return res.status(200).json({ ...newOrder, lines, status });
+
+      //send updated order to websocket client for admins
+      adminWss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(newOrder));
+        }
+      });
+      //return updated order
+      return res.status(200).json(newOrder);
     }
   }
   return res.status(500).json({ error: 'Unable to update order status' });
