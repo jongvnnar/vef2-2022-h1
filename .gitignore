@@ -5,4 +5,4 @@ dist
 *.log
 TODO.md
 .env
-
+.env.test
