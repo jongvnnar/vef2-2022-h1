@@ -4,7 +4,7 @@ import {
   deleteAndParse,
   fetchAndParse,
   patchAndParse,
-  postAndParse,
+  postAndParse
 } from './utils';
 
 describe('carts', () => {
@@ -182,7 +182,7 @@ describe('carts', () => {
     expect(result.total).toBe(5390 * line.quantity);
   });
 
-  test("PATCH /cart/:cartId/lines/:id updates a line's quantity", async () => {
+  test('PATCH /cart/:cartId/lines/:id updates a line\'s quantity', async () => {
     await insertData();
     const {
       result: { id: cartId },

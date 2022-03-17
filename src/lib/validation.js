@@ -150,7 +150,7 @@ export function validateResourceNotExists(fetchResource) {
 export const validateState = body('status')
   .isIn(['NEW', 'PREPARE', 'COOKING', 'READY', 'FINISHED'])
   .withMessage(
-    "Status must be one of 'NEW', 'PREPARE','COOKING', 'READY', 'FINISHED'"
+    'Status must be one of \'NEW\', \'PREPARE\',\'COOKING\', \'READY\', \'FINISHED\''
   );
 
 const MIMETYPES = ['image/jpeg', 'image/png', 'image/gif'];
