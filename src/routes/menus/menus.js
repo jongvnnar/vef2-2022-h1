@@ -52,6 +52,25 @@ export async function findMenuItemById(id) {
   return false;
 }
 
+export async function findMenuItemByTitle(title) {
+  const q = `
+    SELECT * FROM menu.products WHERE title = $1
+    `;
+
+  try {
+    const result = await query(q, [title]);
+
+    if (result.rowCount === 1) {
+      return result.rows[0];
+    }
+  } catch (e) {
+    console.error('Gat ekki fundið menu product eftir title');
+    return null;
+  }
+
+  return false;
+}
+
 export async function createMenuItem(
   title,
   price,
@@ -59,11 +78,15 @@ export async function createMenuItem(
   category,
   image
 ) {
+  const exists = await findMenuItemByTitle(title);
+  if (exists) {
+    console.error(`menu item með titil: ${title} nú þegar til`);
+    return null;
+  }
   const q = `
     INSERT INTO menu.products (title, price, description, category, image)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING title, price, description, category, image
-
     `;
 
   try {
@@ -83,7 +106,7 @@ export async function createMenuItem(
 }
 
 export async function conditionalUpdateMenu(id, values) {
-  if (values) {
+  if (Object.keys(values).length === 0) {
     console.error('body er tómt');
     return null;
   }
@@ -115,7 +138,6 @@ export async function conditionalUpdateMenu(id, values) {
   ];
   try {
     const result = await query(q, vals);
-    // console.log(result.rows[0]);
     return result.rows[0];
   } catch (e) {
     console.error('Gat ekki uppfært vöru');
@@ -159,7 +181,6 @@ export async function postMenuItemRoute(req, res) {
 export async function patchMenuItemRoute(req, res) {
   const { id } = req.params;
   const values = req.body;
-
   const result = await conditionalUpdateMenu(id, values);
 
   if (result) {

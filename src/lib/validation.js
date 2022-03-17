@@ -61,6 +61,32 @@ export const categoryValidator = [
     .isLength({ max: 128 })
     .withMessage('Titill má að hámarki vera 128 stafir'),
 ];
+export const menuItemValidator = [
+  body('title')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Titill má ekki vera tómur'),
+  body('title')
+    .isLength({ max: 128 })
+    .withMessage('Titill má að hámarki vera 128 stafir'),
+  body('price')
+    .isInt({ min: 1 })
+    .withMessage('price must be an integer larger than 0'),
+  body('description')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Titill má ekki vera tómur'),
+  body('image')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('sloð á mynd má ekki vera tóm'),
+  body('title')
+    .isLength({ max: 255 })
+    .withMessage('sloð á mynd má að hámarki vera 255 stafir'),
+  body('category')
+    .isInt({ min: 1 })
+    .withMessage('category must be an integer larger than 0'),
+];
 
 // Viljum keyra sér og með validation, ver gegn „self XSS“
 export function xssSanitizationMiddleware(fields) {
