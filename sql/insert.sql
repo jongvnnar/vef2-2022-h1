@@ -11,7 +11,7 @@ INSERT INTO menu.categories (title) VALUES ('drinks');
 INSERT INTO menu.categories (title) VALUES ('appetizers');
 INSERT INTO menu.categories (title) VALUES ('desserts');
 
-INSERT INTO menu.products (title, price, description, category, image) VALUES ('Vegan Peanut Steak',5390, 'We make the steak from scratch from nuts, beans and seasonal vegetables. Served with vegetables and green pesto', 1,'/');
+INSERT INTO menu.products (title, price, description, category, image) VALUES ('Vegan Peanut Steak',5390, 'We make the steak from scratch from nuts, beans and seasonal vegetables. Served with vegetables and green pesto', 1,'ghostbusters.png');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Grilled Cauliflower',4890, 'Creamy barley, grapes, coriander, wasabi beans and satay sauce', 1,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Duck Salat',4990, 'Confit duck, spinach, mandarins and mint dressing', 1,'/');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Lightly Salted Cod',6290, 'Grilled apple puree, lobster salad, black garlic and shellfish sauce', 1,'/');
