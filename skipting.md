@@ -17,12 +17,11 @@
 - [x] cart
 - [x] cart tests
 - [x] paging
-- [ ] setja upp a heroku
+- [x] setja upp a heroku
 
 ## Jón
 
 - [x] orders
-  - [ ] order lines með auka upplýsingum
 - [ ] orders tests
 - [x] websockets
 - [x] users

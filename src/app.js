@@ -23,14 +23,15 @@ const app = express();
 app.use(express.json());
 app.use(passport.initialize());
 
-// Sja til þess að content-type sé json í post og patch requestum, fengið frá sýnilausn hopverkefni 1 2021
+// Sja til þess að content-type sé json eða form-data í post og patch requestum, fengið frá sýnilausn hopverkefni 1 2021
 app.use((req, res, next) => {
   if (req.method === 'POST' || req.method === 'PATCH') {
     if (
       req.headers['content-type'] &&
-      req.headers['content-type'] !== 'application/json'
+      req.headers['content-type'] !== 'application/json' &&
+      !req.headers['content-type'].startsWith('multipart/form-data;')
     ) {
-      return res.status(400).json({ error: 'body must be json' });
+      return res.status(400).json({ error: 'body must be json or form-data' });
     }
   }
   return next();
@@ -41,6 +42,7 @@ app.use('/cart', cartRouter);
 app.use('/users', userRouter);
 app.use('/orders', orderRouter);
 app.use('/', indexRouter);
+
 // cors
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -72,6 +74,7 @@ const server = app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}/`);
 });
 
+//add websocket servers to express server
 export const orderWss = ordersWebsocketServer();
 export const adminWss = adminWebsocketServer();
 
