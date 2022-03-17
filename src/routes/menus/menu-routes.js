@@ -7,6 +7,7 @@ import { validationCheck } from '../../lib/validation-helpers.js';
 import {
   atLeastOneBodyValueValidator,
   idValidator,
+  imageValidator,
   menuItemValidator,
   validateResourceExists,
 } from '../../lib/validation.js';
@@ -53,6 +54,7 @@ router.post(
   requireAdmin,
   withMulter,
   menuItemValidator,
+  imageValidator,
   validationCheck,
   catchErrors(postMenuItemRoute)
 );
@@ -70,6 +72,7 @@ router.patch(
   '/:id',
   requireAuthentication,
   requireAdmin,
+  withMulter,
   idValidator('id'),
   atLeastOneBodyValueValidator([
     'title',

@@ -3,6 +3,13 @@ import xss from 'xss';
 import { listCartLines } from '../routes/carts/carts.js';
 import { findCategoryByTitle } from '../routes/categories/categories.js';
 import { resourceExists } from './validation-helpers.js';
+
+export const isUpdateAllowAsOptional = (value, { req }) => {
+  if (!value && req.method === 'PATCH') {
+    return false;
+  }
+  return true;
+};
 // Endurnýtum mjög líka validation
 
 export function idValidator(idName) {
@@ -63,23 +70,29 @@ export const categoryValidator = [
 ];
 export const menuItemValidator = [
   body('title')
+    .if(isUpdateAllowAsOptional)
     .trim()
     .isLength({ min: 1 })
     .withMessage('Titill má ekki vera tómur'),
   body('title')
+    .if(isUpdateAllowAsOptional)
     .isLength({ max: 128 })
     .withMessage('Titill má að hámarki vera 128 stafir'),
   body('price')
+    .if(isUpdateAllowAsOptional)
     .isInt({ min: 1 })
     .withMessage('price must be an integer larger than 0'),
   body('description')
+    .if(isUpdateAllowAsOptional)
     .trim()
     .isLength({ min: 1 })
     .withMessage('Titill má ekki vera tómur'),
   body('title')
+    .if(isUpdateAllowAsOptional)
     .isLength({ max: 255 })
     .withMessage('sloð á mynd má að hámarki vera 255 stafir'),
   body('category')
+    .if(isUpdateAllowAsOptional)
     .isInt({ min: 1 })
     .withMessage('category must be an integer larger than 0'),
 ];
@@ -96,13 +109,15 @@ export function sanitizationMiddleware(fields) {
 export function atLeastOneBodyValueValidator(fields) {
   return body().custom(async (value, { req }) => {
     const { body: reqBody } = req;
-
+    const { file: reqFile } = req;
     let valid = false;
-
     for (let i = 0; i < fields.length; i += 1) {
       const field = fields[i];
 
-      if (field in reqBody && reqBody[field] != null) {
+      if (
+        (field in reqBody && reqBody[field] != null) ||
+        (reqFile && reqFile.fieldname === field)
+      ) {
         valid = true;
         break;
       }
@@ -137,3 +152,32 @@ export const validateState = body('status')
   .withMessage(
     "Status must be one of 'NEW', 'PREPARE','COOKING', 'READY', 'FINISHED'"
   );
+
+const MIMETYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
+function validateImageMimetype(mimetype) {
+  return MIMETYPES.indexOf(mimetype.toLowerCase()) >= 0;
+}
+
+export const imageValidator = body('image').custom(
+  async (image, { req = {} }) => {
+    const { file: { path, mimetype } = {} } = req;
+
+    if (!path && !mimetype && req.method === 'PATCH') {
+      return Promise.resolve();
+    }
+
+    if (!path && !mimetype) {
+      return Promise.reject(new Error('image is required'));
+    }
+
+    if (!validateImageMimetype(mimetype)) {
+      const error =
+        `Mimetype ${mimetype} is not legal. ` +
+        `Only ${MIMETYPES.join(', ')} are accepted`;
+      return Promise.reject(new Error(error));
+    }
+
+    return Promise.resolve();
+  }
+);

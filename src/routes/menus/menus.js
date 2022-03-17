@@ -204,6 +204,21 @@ export async function postMenuItemRoute(req, res) {
 export async function patchMenuItemRoute(req, res) {
   const { id } = req.params;
   const values = req.body;
+  const { path: imagePath = '' } = req.file || {};
+  let image;
+  if (imagePath) {
+    try {
+      const uploadResult = await uploadImage(imagePath);
+      if (!uploadResult || !uploadResult.secure_url) {
+        throw new Error('no secure url from cloudinary upload');
+      }
+      image = uploadResult.secure_url;
+    } catch (e) {
+      console.error(e);
+      return res.status(500).end().json({ error: e.message });
+    }
+  }
+  if (image) values.image = image;
   const result = await conditionalUpdateMenu(id, values);
 
   if (result) {
