@@ -97,30 +97,31 @@ export async function updateCurrentUserRoute(req, res) {
 export async function updateUserRoute(req, res) {
   const {
     body: { admin } = {},
-    params: { userId },
+    params: { id },
+    user,
   } = req;
-
+  if (user.id === parseInt(id, 10)) {
+    return res.status(400).json({ error: 'admin cannot change self' });
+  }
   try {
     const updatedUser = await query(
       `
         UPDATE
           users
         SET
-          admin = $1,
-          updated = current_timestamp
+          admin = $1
         WHERE
           id = $2
         RETURNING
-          id, username, email, admin, created, updated
+          id, username, email, admin
       `,
-      [admin, userId]
+      [admin, id]
     );
-    return res.status(200).json(updatedUser);
+    if (updatedUser.rowCount === 1) {
+      return res.status(200).json(updatedUser.rows[0]);
+    } else throw new Error('unable to update user');
   } catch (e) {
-    console.error(
-      `unable to change admin to "${admin}" for user "${userId}"`,
-      e
-    );
+    console.error(`unable to change admin to "${admin}" for user "${id}"`, e);
   }
 
   return res.status(500).json(null);

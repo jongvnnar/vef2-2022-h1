@@ -5,7 +5,7 @@ import {
   fetchAndParse,
   loginAsHardcodedAdminAndReturnToken,
   patchAndParse,
-  postAndParse
+  postAndParse,
 } from './utils';
 
 describe('menus', () => {
@@ -41,17 +41,21 @@ describe('menus', () => {
       title: 'post test',
       price: 12345,
       description: 'post about',
-      category: 1
-    }
+      category: 1,
+    };
     const token = await loginAsHardcodedAdminAndReturnToken();
-    const imagePath = './test.jpg'
-    const { result, status } = await postAndParse('/menu', body, token, imagePath);
+    const imagePath = './test.jpg';
+    const { result, status } = await postAndParse(
+      '/menu',
+      body,
+      token,
+      imagePath
+    );
     expect(status).toBe(201);
-    expect(result.title).toBe('post test')
-    expect(result.price).toBe(12345)
-    expect(result.description).toBe('post about')
-    expect(result.category).toBe(1)
-
+    expect(result.title).toBe('post test');
+    expect(result.price).toBe(12345);
+    expect(result.description).toBe('post about');
+    expect(result.category).toBe(1);
   });
 
   test('GET /menu/ get items in category 1', async () => {

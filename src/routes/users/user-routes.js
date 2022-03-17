@@ -17,7 +17,6 @@ import {
   atLeastOneBodyValueValidator,
   idValidator,
   sanitizationMiddleware,
-  uuidValidator,
   validateResourceExists,
   xssSanitizationMiddleware,
 } from '../../lib/validation.js';
@@ -76,10 +75,10 @@ router.get(
 router.get('/me', requireAuthentication, catchErrors(currentUserRoute));
 
 router.get(
-  '/:userId',
+  '/:id',
   requireAuthentication,
   requireAdmin,
-  idValidator('userId'),
+  idValidator('id'),
   validateResourceExists(listUser),
   validationCheck,
   returnResource
@@ -116,10 +115,12 @@ export const patchUserValidator = body('admin')
   });
 
 router.patch(
-  '/:userId',
+  '/:id',
   requireAuthentication,
   requireAdmin,
-  uuidValidator('userId'),
+  idValidator('id'),
   patchUserValidator,
+  validateResourceExists(listUser),
+  validationCheck,
   catchErrors(updateUserRoute)
 );

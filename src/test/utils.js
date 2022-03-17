@@ -5,8 +5,7 @@ import fs from 'fs';
 import fetch from 'node-fetch';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { stat } from './fs-helpers';
-
+import { stat } from '../lib/fs-helpers.js';
 
 // Nær allt fengið úr sýnilausn hópverkefni 1.
 
@@ -34,7 +33,13 @@ export function getRandomInt(min, max) {
   return Math.floor(Math.random() * (floorMax - ceilMin) + ceilMin);
 }
 
-export async function methodAndParse(method, path, data = null, token = null, imagePath = null) {
+export async function methodAndParse(
+  method,
+  path,
+  data = null,
+  token = null,
+  imagePath = null
+) {
   const url = new URL(path, baseUrl);
 
   const options = { headers: {} };

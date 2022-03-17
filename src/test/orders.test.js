@@ -85,7 +85,7 @@ describe('orders', () => {
     const { lines, status: orderStatus } = result;
 
     expect(lines.length).toBeGreaterThan(0);
-    expect(lines[0].product_id).toBeDefined();
+    expect(lines[0].productId).toBeDefined();
     expect(lines[0].title).toBeDefined();
     expect(lines[0].description).toBeDefined();
     expect(lines[0].image).toBeDefined();
