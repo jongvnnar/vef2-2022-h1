@@ -1,10 +1,11 @@
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { createSchema, dropSchema, end, insertData } from '../lib/db';
 import {
+  deleteAndParse,
   fetchAndParse,
   loginAsHardcodedAdminAndReturnToken,
   patchAndParse,
-  postAndParse,
+  postAndParse
 } from './utils';
 
 describe('menus', () => {
@@ -35,13 +36,23 @@ describe('menus', () => {
     expect(status).toBe(401);
   });
 
-  // test('POST /menu/ add item to menu requires body', async () => {
-  //   const body = {
+  test('POST /menu/ add item to menu requires body', async () => {
+    const body = {
+      title: 'post test',
+      price: 12345,
+      description: 'post about',
+      category: 1
+    }
+    const token = await loginAsHardcodedAdminAndReturnToken();
+    const imagePath = './test.jpg'
+    const { result, status } = await postAndParse('/menu', body, token, imagePath);
+    expect(status).toBe(201);
+    expect(result.title).toBe('post test')
+    expect(result.price).toBe(12345)
+    expect(result.description).toBe('post about')
+    expect(result.category).toBe(1)
 
-  //   }
-  //   const { status } = await postAndParse('/menu', body);
-  //   expect(status).toBe(200);
-  // });
+  });
 
   test('GET /menu/ get items in category 1', async () => {
     const { result, status } = await fetchAndParse('/menu?category=1', null);
@@ -126,5 +137,22 @@ describe('menus', () => {
     expect(result.price).toBe(12345);
     expect(result.description).toBe('test');
     expect(result.category).toBe(2);
+  });
+
+  test('Delete /menu/1 delete item 1', async () => {
+    const token = await loginAsHardcodedAdminAndReturnToken();
+    const { status } = await deleteAndParse('/menu/1', null, token);
+    expect(status).toBe(204);
+  });
+
+  test('Delete /menu/1 no auth', async () => {
+    const { status } = await deleteAndParse('/menu/1', null);
+    expect(status).toBe(401);
+  });
+
+  test('Delete /menu/1 invalid id', async () => {
+    const token = await loginAsHardcodedAdminAndReturnToken();
+    const { status } = await deleteAndParse('/menu/0', null, token);
+    expect(status).toBe(404);
   });
 });
