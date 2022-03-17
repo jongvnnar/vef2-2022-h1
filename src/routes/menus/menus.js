@@ -12,7 +12,7 @@ export async function listMenuItems(req, res) {
   const q = `
   SELECT id,title,price,description,image,category,created,updated
   FROM menu.products
-  WHERE category = $1 OR (title LIKE $2 OR description LIKE $2)
+  WHERE category = COALESCE($1,category) AND (title LIKE $2 OR description LIKE $2)
   ORDER BY updated ASC
   `;
 
