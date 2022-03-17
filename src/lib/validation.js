@@ -109,13 +109,15 @@ export function sanitizationMiddleware(fields) {
 export function atLeastOneBodyValueValidator(fields) {
   return body().custom(async (value, { req }) => {
     const { body: reqBody } = req;
-
+    const { file: reqFile } = req;
     let valid = false;
-
     for (let i = 0; i < fields.length; i += 1) {
       const field = fields[i];
 
-      if (field in reqBody && reqBody[field] != null) {
+      if (
+        (field in reqBody && reqBody[field] != null) ||
+        (reqFile && reqFile.fieldname === field)
+      ) {
         valid = true;
         break;
       }

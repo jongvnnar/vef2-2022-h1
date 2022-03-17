@@ -72,6 +72,7 @@ router.patch(
   '/:id',
   requireAuthentication,
   requireAdmin,
+  withMulter,
   idValidator('id'),
   atLeastOneBodyValueValidator([
     'title',
