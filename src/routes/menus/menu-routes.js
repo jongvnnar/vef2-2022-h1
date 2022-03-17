@@ -9,6 +9,7 @@ import {
   validateResourceNotExists
 } from '../../lib/validation.js';
 import {
+  conditionalUpdateMenu,
   deleteMenuItemRoute,
   getMenuItem,
   listMenuItems,
@@ -45,7 +46,7 @@ router.patch(
   requireAuthentication,
   requireAdmin,
   idValidator('id'),
-  validateResourceExists(patchMenuItemRoute),
+  validateResourceExists(conditionalUpdateMenu),
   validationCheck,
   catchErrors(patchMenuItemRoute)
 );
