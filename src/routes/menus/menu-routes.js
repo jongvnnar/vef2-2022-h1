@@ -3,7 +3,11 @@ import { requireAdmin, requireAuthentication } from '../../auth/passport.js';
 import { catchErrors } from '../../lib/catch-errors.js';
 import { returnResource } from '../../lib/utils/returnResource.js';
 import { validationCheck } from '../../lib/validation-helpers.js';
-import { idValidator, validateResourceExists } from '../../lib/validation.js';
+import {
+  idValidator,
+  validateResourceExists,
+  validateResourceNotExists
+} from '../../lib/validation.js';
 import {
   deleteMenuItemRoute,
   getMenuItem,
@@ -24,6 +28,7 @@ router.get(
 router.post('/',
   requireAuthentication,
   requireAdmin,
+  validateResourceNotExists('title'),
   catchErrors(postMenuItemRoute));
 
 router.get(
@@ -40,7 +45,6 @@ router.patch(
   requireAuthentication,
   requireAdmin,
   idValidator('id'),
-  validationCheck,
   validateResourceExists(patchMenuItemRoute),
   validationCheck,
   catchErrors(patchMenuItemRoute)
