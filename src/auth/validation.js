@@ -1,4 +1,5 @@
 import { body } from 'express-validator';
+import { isUpdateAllowAsOptional } from '../lib/validation.js';
 import { LoginError } from './login-error.js';
 import { comparePasswords, findByEmail, findByUsername } from './users.js';
 
@@ -8,18 +9,6 @@ const isLoginAllowAsOptional = (value, { req }) => {
     typeof value !== 'string' &&
     req.method === 'POST' &&
     req.path === '/login'
-  ) {
-    return false;
-  }
-  return true;
-};
-
-const isUpdateAllowAsOptional = (value, { req }) => {
-  if (
-    !value &&
-    typeof value !== 'string' &&
-    req.method === 'PATCH' &&
-    req.path === '/me'
   ) {
     return false;
   }

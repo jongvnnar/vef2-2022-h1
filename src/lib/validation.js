@@ -3,6 +3,13 @@ import xss from 'xss';
 import { listCartLines } from '../routes/carts/carts.js';
 import { findCategoryByTitle } from '../routes/categories/categories.js';
 import { resourceExists } from './validation-helpers.js';
+
+export const isUpdateAllowAsOptional = (value, { req }) => {
+  if (!value && req.method === 'PATCH') {
+    return false;
+  }
+  return true;
+};
 // Endurnýtum mjög líka validation
 
 export function idValidator(idName) {
@@ -63,23 +70,29 @@ export const categoryValidator = [
 ];
 export const menuItemValidator = [
   body('title')
+    .if(isUpdateAllowAsOptional)
     .trim()
     .isLength({ min: 1 })
     .withMessage('Titill má ekki vera tómur'),
   body('title')
+    .if(isUpdateAllowAsOptional)
     .isLength({ max: 128 })
     .withMessage('Titill má að hámarki vera 128 stafir'),
   body('price')
+    .if(isUpdateAllowAsOptional)
     .isInt({ min: 1 })
     .withMessage('price must be an integer larger than 0'),
   body('description')
+    .if(isUpdateAllowAsOptional)
     .trim()
     .isLength({ min: 1 })
     .withMessage('Titill má ekki vera tómur'),
   body('title')
+    .if(isUpdateAllowAsOptional)
     .isLength({ max: 255 })
     .withMessage('sloð á mynd má að hámarki vera 255 stafir'),
   body('category')
+    .if(isUpdateAllowAsOptional)
     .isInt({ min: 1 })
     .withMessage('category must be an integer larger than 0'),
 ];
