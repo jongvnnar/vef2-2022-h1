@@ -1,6 +1,13 @@
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { createSchema, dropSchema, end, insertData } from '../lib/db';
-import { createRandomUserAndReturnWithToken, deleteAndParse, fetchAndParse, loginAsHardcodedAdminAndReturnToken, patchAndParse, postAndParse } from './utils';
+import {
+  createRandomUserAndReturnWithToken,
+  deleteAndParse,
+  fetchAndParse,
+  loginAsHardcodedAdminAndReturnToken,
+  patchAndParse,
+  postAndParse,
+} from './utils';
 
 describe('categories', () => {
   beforeAll(async () => {
@@ -44,7 +51,11 @@ describe('categories', () => {
     const newCategory = {
       title: 'test category',
     };
-    const { result, status } = await postAndParse('/categories', newCategory, token);
+    const { result, status } = await postAndParse(
+      '/categories',
+      newCategory,
+      token
+    );
 
     expect(status).toBe(201);
     expect(result.id).toBeDefined();
@@ -56,8 +67,11 @@ describe('categories', () => {
       title: 'new Title category',
     };
 
-    const { status } = await patchAndParse('/categories/1',
-      newCategoryTitle, null);
+    const { status } = await patchAndParse(
+      '/categories/1',
+      newCategoryTitle,
+      null
+    );
 
     expect(status).toBe(401);
   });
@@ -69,12 +83,14 @@ describe('categories', () => {
       title: 'new Title category',
     };
 
-    const { status } = await patchAndParse('/categories/1',
-      newCategoryTitle, token);
+    const { status } = await patchAndParse(
+      '/categories/1',
+      newCategoryTitle,
+      token
+    );
 
     expect(status).toBe(401);
   });
-
 
   test('patch /categories/:Id updates a category title', async () => {
     await insertData();
@@ -83,8 +99,11 @@ describe('categories', () => {
       title: 'new Title category',
     };
 
-    const { result, status } = await patchAndParse('/categories/1',
-      newCategoryTitle, token);
+    const { result, status } = await patchAndParse(
+      '/categories/1',
+      newCategoryTitle,
+      token
+    );
 
     expect(status).toBe(200);
     expect(result.title).toBe(newCategoryTitle.title);
@@ -93,8 +112,7 @@ describe('categories', () => {
   test('delete /categories/:Id requires user to delete category', async () => {
     await insertData();
 
-    const { status } = await deleteAndParse('/categories/1', null,
-      null);
+    const { status } = await deleteAndParse('/categories/1', null, null);
 
     expect(status).toBe(401);
   });
@@ -103,8 +121,7 @@ describe('categories', () => {
     await insertData();
     const token = await createRandomUserAndReturnWithToken();
 
-    const { status } = await deleteAndParse('/categories/1', null,
-      token);
+    const { status } = await deleteAndParse('/categories/1', null, token);
 
     expect(status).toBe(401);
   });
@@ -113,14 +130,8 @@ describe('categories', () => {
     await insertData();
     const token = await loginAsHardcodedAdminAndReturnToken();
 
-    const { status } = await deleteAndParse('/categories/1', null,
-      token);
+    const { status } = await deleteAndParse('/categories/1', null, token);
 
     expect(status).toBe(204);
   });
-
-
-
 });
-
-

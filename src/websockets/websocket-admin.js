@@ -1,4 +1,5 @@
 import { WebSocketServer } from 'ws';
+
 export function adminWebsocketServer() {
   const wss = new WebSocketServer({ noServer: true });
   wss.on('connection', async (ws, req) => {
@@ -8,7 +9,7 @@ export function adminWebsocketServer() {
     }
     ws.send(JSON.stringify({ status: 'logged in' }));
 
-    ws.on('close', () => console.log('Client disconnected'));
+    ws.on('close', () => console.error('Client disconnected'));
   });
 
   return wss;

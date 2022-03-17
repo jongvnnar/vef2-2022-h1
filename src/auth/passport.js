@@ -45,7 +45,7 @@ export async function websocketAuth(req) {
   if (!token) {
     return { error: 'Authorization needed' };
   }
-  let args = {};
+  const args = {};
   jwt.verify(token, jwtSecret, (err, data) => {
     args.error = err?.message;
     args.data = data;

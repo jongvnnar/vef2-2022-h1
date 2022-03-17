@@ -6,14 +6,14 @@ import {
   categoryDoesNotExistValidator,
   categoryValidator,
   idValidator,
-  validateResourceExists
+  validateResourceExists,
 } from '../../lib/validation.js';
 import {
   deleteCategoryRoute,
   getCategory,
   listCategories,
   patchCategoryRoute,
-  postCategoryRoute
+  postCategoryRoute,
 } from './categories.js';
 
 export const router = express.Router();

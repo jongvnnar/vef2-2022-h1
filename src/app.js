@@ -74,21 +74,21 @@ const server = app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}/`);
 });
 
-//add websocket servers to express server
+// add websocket servers to express server
 export const orderWss = ordersWebsocketServer();
 export const adminWss = adminWebsocketServer();
 
-server.on('upgrade', async function upgrade(request, socket, head) {
+server.on('upgrade', async (request, socket, head) => {
   const { pathname } = new URL(request.url, `http://${request.headers.host}`);
   if (pathname.startsWith('/orders/')) {
-    orderWss.handleUpgrade(request, socket, head, function done(ws) {
+    orderWss.handleUpgrade(request, socket, head, (ws) => {
       orderWss.emit('connection', ws, request);
     });
   } else if (pathname === '/admin' || pathname === '/admin/') {
     try {
       const auth = await websocketAuth(request);
       request.auth = auth;
-      adminWss.handleUpgrade(request, socket, head, function done(ws) {
+      adminWss.handleUpgrade(request, socket, head, (ws) => {
         adminWss.emit('connection', ws, request);
       });
     } catch (e) {

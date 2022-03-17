@@ -1,8 +1,10 @@
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { createSchema, dropSchema, end, insertData } from '../lib/db';
 import {
-  fetchAndParse, loginAsHardcodedAdminAndReturnToken, patchAndParse,
-  postAndParse
+  fetchAndParse,
+  loginAsHardcodedAdminAndReturnToken,
+  patchAndParse,
+  postAndParse,
 } from './utils';
 
 describe('menus', () => {
@@ -54,7 +56,10 @@ describe('menus', () => {
   });
 
   test('GET /menu/ get items containing search query', async () => {
-    const { result, status } = await fetchAndParse('/menu?search=EkkiTil', null);
+    const { result, status } = await fetchAndParse(
+      '/menu?search=EkkiTil',
+      null
+    );
     expect(status).toBe(200);
     expect(result.items.length).toBe(0);
   });
@@ -69,7 +74,10 @@ describe('menus', () => {
   });
 
   test('GET /menu/ both search and category', async () => {
-    const { result, status } = await fetchAndParse('/menu?category=1&search=Vegan', null);
+    const { result, status } = await fetchAndParse(
+      '/menu?category=1&search=Vegan',
+      null
+    );
     expect(status).toBe(200);
     expect(result.items[0].id).toBe(1);
     expect(result.items[0].title).toBe('Vegan Peanut Steak');
@@ -109,7 +117,7 @@ describe('menus', () => {
       title: 'test title',
       price: 12345,
       description: 'test',
-      category: 2
+      category: 2,
     };
     const token = await loginAsHardcodedAdminAndReturnToken();
     const { result, status } = await patchAndParse('/menu/1', body, token);
@@ -119,5 +127,4 @@ describe('menus', () => {
     expect(result.description).toBe('test');
     expect(result.category).toBe(2);
   });
-
 });

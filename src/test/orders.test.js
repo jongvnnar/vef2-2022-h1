@@ -4,7 +4,7 @@ import {
   createRandomUserAndReturnWithToken,
   fetchAndParse,
   loginAsHardcodedAdminAndReturnToken,
-  postAndParse
+  postAndParse,
 } from './utils';
 
 describe('orders', () => {
@@ -48,8 +48,8 @@ describe('orders', () => {
     await insertData();
     const order = {
       name: 'test-order',
-      cart: 'f811f9d0-e860-41c4-adb9-e6339f404cr7'
-    }
+      cart: 'f811f9d0-e860-41c4-adb9-e6339f404cr7',
+    };
 
     const { status } = await postAndParse('/orders', order);
 
@@ -60,8 +60,8 @@ describe('orders', () => {
     await insertData();
     const order = {
       name: 'test-order',
-      cart: 'f811f9d0-e860-41c4-adb9-e6339f404c27'
-    }
+      cart: 'f811f9d0-e860-41c4-adb9-e6339f404c27',
+    };
 
     const { result, status } = await postAndParse('/orders', order);
 
@@ -73,7 +73,9 @@ describe('orders', () => {
   test('GET /orders/:id returns order', async () => {
     await insertData();
 
-    const { result, status } = await fetchAndParse('/orders/b9e8ba22-96ea-4ef7-8c52-272fad6d76f1');
+    const { result, status } = await fetchAndParse(
+      '/orders/b9e8ba22-96ea-4ef7-8c52-272fad6d76f1'
+    );
 
     expect(status).toBe(200);
     expect(result.id).toBeDefined();
@@ -90,7 +92,7 @@ describe('orders', () => {
     expect(lines[0].category).toBeDefined();
     expect(lines[0].quantity).toBeDefined();
     expect(lines[0].price).toBeDefined();
-    expect(lines[0].total).toBe(lines[0].quantity*lines[0].price);
+    expect(lines[0].total).toBe(lines[0].quantity * lines[0].price);
 
     expect(orderStatus.length).toBeGreaterThan(0);
   });
@@ -98,11 +100,13 @@ describe('orders', () => {
   test('GET /orders/:id/status returns order status', async () => {
     await insertData();
 
-    const { result, status } = await fetchAndParse('/orders/b9e8ba22-96ea-4ef7-8c52-272fad6d76f1/status');
+    const { result, status } = await fetchAndParse(
+      '/orders/b9e8ba22-96ea-4ef7-8c52-272fad6d76f1/status'
+    );
 
     expect(status).toBe(200);
     expect(result.length).toBeGreaterThan(0);
-    expect(result[result.length-1].state).toBe('NEW');
+    expect(result[result.length - 1].state).toBe('NEW');
   });
 
   test('POST /orders/:id/status requires user', async () => {
@@ -112,7 +116,10 @@ describe('orders', () => {
       status: 'PREPARE',
     };
 
-    const { status } = await postAndParse('/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0/status', newState);
+    const { status } = await postAndParse(
+      '/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0/status',
+      newState
+    );
 
     expect(status).toBe(401);
   });
@@ -125,7 +132,11 @@ describe('orders', () => {
       status: 'PREPARE',
     };
 
-    const { status } = await postAndParse('/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0/status', newState, token);
+    const { status } = await postAndParse(
+      '/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0/status',
+      newState,
+      token
+    );
 
     expect(status).toBe(401);
   });
@@ -138,7 +149,11 @@ describe('orders', () => {
       status: 'COOKING',
     };
 
-    const { status } = await postAndParse('/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0/status', newState, token);
+    const { status } = await postAndParse(
+      '/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0/status',
+      newState,
+      token
+    );
 
     expect(status).toBe(400);
   });
@@ -151,7 +166,11 @@ describe('orders', () => {
       status: 'PREPARE',
     };
 
-    const { result, status } = await postAndParse('/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0/status', newState, token);
+    const { result, status } = await postAndParse(
+      '/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0/status',
+      newState,
+      token
+    );
 
     expect(status).toBe(200);
     expect(result.current_state).toBe(newState.status);

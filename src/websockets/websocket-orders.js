@@ -1,6 +1,7 @@
 import { WebSocketServer } from 'ws';
 import { OrderState } from '../lib/order-state.js';
 import { listOrderRoute } from '../routes/orders/orders.js';
+
 export function ordersWebsocketServer() {
   const wss = new WebSocketServer({ noServer: true });
 
@@ -23,7 +24,7 @@ export function ordersWebsocketServer() {
     }
     ws.send(JSON.stringify(order));
 
-    ws.on('close', () => console.log('Client disconnected'));
+    ws.on('close', () => console.warn('Client disconnected'));
   });
 
   return wss;
