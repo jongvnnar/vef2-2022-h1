@@ -10,7 +10,7 @@
 
 - [ ] categories
 - [ ] categories tests
-- [ ] myndir
+- [x] myndir
 
 ## Fannar
 

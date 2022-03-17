@@ -137,3 +137,32 @@ export const validateState = body('status')
   .withMessage(
     "Status must be one of 'NEW', 'PREPARE','COOKING', 'READY', 'FINISHED'"
   );
+
+const MIMETYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
+function validateImageMimetype(mimetype) {
+  return MIMETYPES.indexOf(mimetype.toLowerCase()) >= 0;
+}
+
+export const imageValidator = body('image').custom(
+  async (image, { req = {} }) => {
+    const { file: { path, mimetype } = {} } = req;
+
+    if (!path && !mimetype && req.method === 'PATCH') {
+      return Promise.resolve();
+    }
+
+    if (!path && !mimetype) {
+      return Promise.reject(new Error('image is required'));
+    }
+
+    if (!validateImageMimetype(mimetype)) {
+      const error =
+        `Mimetype ${mimetype} is not legal. ` +
+        `Only ${MIMETYPES.join(', ')} are accepted`;
+      return Promise.reject(new Error(error));
+    }
+
+    return Promise.resolve();
+  }
+);
