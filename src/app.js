@@ -5,10 +5,13 @@ import { router as cartRouter } from './routes/carts/cart-routes.js';
 import { router as categoryRouter } from './routes/categories/categories-routes.js';
 import { router as indexRouter } from './routes/index/index-routes.js';
 import { router as menuRouter } from './routes/menus/menu-routes.js';
+// eslint-disable-next-line import/no-cycle
 import { router as orderRouter } from './routes/orders/order-routes.js';
 import { router as userRouter } from './routes/users/user-routes.js';
-import { adminWebsocketServer } from './websockets/websocket-admin.js';
-import { ordersWebsocketServer } from './websockets/websocket-orders.js';
+// eslint-disable-next-line import/no-cycle
+import { adminWebsocket } from './websockets/websocket-admin.js';
+// eslint-disable-next-line import/no-cycle
+import { orderWebsocket } from './websockets/websocket-orders.js';
 
 dotenv.config();
 
@@ -75,8 +78,8 @@ const server = app.listen(port, () => {
 });
 
 // add websocket servers to express server
-export const orderWss = ordersWebsocketServer();
-export const adminWss = adminWebsocketServer();
+export const adminWss = adminWebsocket();
+export const orderWss = orderWebsocket();
 
 server.on('upgrade', async (request, socket, head) => {
   const { pathname } = new URL(request.url, `http://${request.headers.host}`);

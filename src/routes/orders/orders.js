@@ -1,35 +1,23 @@
 import WebSocket from 'ws';
 import xss from 'xss';
+// eslint-disable-next-line import/no-cycle
 import { adminWss, orderWss } from '../../app.js';
 import { pagedQuery, query } from '../../lib/db.js';
 import { OrderState } from '../../lib/order-state.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
 import { listCartLines, listProduct } from '../carts/carts.js';
 
-async function listOrder(orderId) {
-  const q = 'SELECT * FROM orders.orders WHERE id = $1';
-  const result = await query(q, [orderId]);
-  if (result && result.rowCount === 1) {
-    const order = result.rows[0];
-    const lines = await listOrderLines(orderId);
-    const status = await listOrderStates(orderId);
-    return { ...order, lines, status };
-  }
-
-  return null;
-}
-
-async function addProductDetail(lines) {
+export async function addProductDetail(lines) {
   const result = [];
   for (const line of lines) {
-    const { cart_id, product_id, quantity } = line;
+    const { cart_id: cartId, product_id: productId, quantity } = line;
     // eslint-disable-next-line no-await-in-loop
     const { title, description, image, category, price } = await listProduct(
-      product_id
+      productId
     );
     const newLine = {
-      cart_id,
-      product_id,
+      cartId,
+      productId,
       title,
       description,
       image,
@@ -43,8 +31,7 @@ async function addProductDetail(lines) {
   return result;
 }
 
-// TODO uppfæra þetta með product, price og total price.
-async function listOrderLines(orderId) {
+export async function listOrderLines(orderId) {
   const q =
     'SELECT product_id, cart_id, quantity FROM orders.lines WHERE order_id = $1';
 
@@ -67,6 +54,28 @@ async function listOrderStates(orderId) {
   }
 
   return [];
+}
+
+async function listOrder(orderId) {
+  const q = 'SELECT * FROM orders.orders WHERE id = $1';
+  const result = await query(q, [orderId]);
+  if (result && result.rowCount === 1) {
+    const order = result.rows[0];
+    const lines = await listOrderLines(orderId);
+    const status = await listOrderStates(orderId);
+    return { ...order, lines, status };
+  }
+
+  return null;
+}
+
+export async function listOrderRoute(_, req) {
+  const { params: { orderId } = {} } = req;
+  const order = await listOrder(orderId);
+  if (!order) return null;
+  const lines = await listOrderLines(orderId);
+  const status = await listOrderStates(orderId);
+  return { ...order, lines, status };
 }
 
 async function updateOrder({ orderId, newStatus }) {
@@ -154,14 +163,14 @@ export async function postOrderRoute(req, res) {
   const { cart = '', name = '' } = req.body;
   const createdOrder = await createOrder({ cart, name });
   if (createdOrder) {
-    //send new orders to admin websocket
+    // send new orders to admin websocket
     adminWss.clients.forEach(async (client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(await listOrder(createdOrder.id)));
       }
     });
 
-    //return created order
+    // return created order
     return res.status(201).json(createdOrder);
   }
 
@@ -174,28 +183,6 @@ export async function getOrderRoute(_, req) {
   if (!order) return null;
   const lines = await listOrderLines(orderId);
   return { ...order, lines };
-}
-
-// export async function postLineRoute(req, res) {
-//   const { params: { orderId } = {} } = req;
-//   const { productId, quantity } = req.body;
-
-//   const createdLine = await createOrderLine({ productId, orderId, quantity });
-
-//   if (createdLine) {
-//     return res.status(201).json(createdLine);
-//   }
-
-//   return res.status(500).json({ error: 'Server error' });
-// }
-
-export async function listOrderRoute(_, req) {
-  const { params: { orderId } = {} } = req;
-  const order = await listOrder(orderId);
-  if (!order) return null;
-  const lines = await listOrderLines(orderId);
-  const status = await listOrderStates(orderId);
-  return { ...order, lines, status };
 }
 
 export async function listOrderStateRoute(_, req) {
@@ -225,7 +212,7 @@ export async function postOrderStateRoute(req, res) {
     }
     const result = await updateOrder({ orderId, newStatus });
     if (result) {
-      //send to websocket client for regular users
+      // send to websocket client for regular users
       orderWss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({ status: newStatus }));
@@ -234,13 +221,13 @@ export async function postOrderStateRoute(req, res) {
 
       const newOrder = await listOrder(orderId);
 
-      //send updated order to websocket client for admins
+      // send updated order to websocket client for admins
       adminWss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify(newOrder));
         }
       });
-      //return updated order
+      // return updated order
       return res.status(200).json(newOrder);
     }
   }

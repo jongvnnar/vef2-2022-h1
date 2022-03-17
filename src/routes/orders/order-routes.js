@@ -12,6 +12,7 @@ import {
   xssSanitizationMiddleware,
 } from '../../lib/validation.js';
 import { listCart } from '../carts/carts.js';
+// eslint-disable-next-line import/no-cycle
 import {
   listAllOrdersRoute,
   listOrderRoute,
@@ -51,7 +52,6 @@ const createOrderValidator = [
     }),
 ];
 
-// TODO athuga hvort createOrderValidator ætti að vera skipt í tvennt
 router.post(
   '/',
   createOrderValidator,

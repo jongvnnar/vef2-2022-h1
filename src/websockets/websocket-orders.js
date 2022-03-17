@@ -1,8 +1,10 @@
 import { WebSocketServer } from 'ws';
 import { OrderState } from '../lib/order-state.js';
+// eslint-disable-next-line import/no-cycle
 import { listOrderRoute } from '../routes/orders/orders.js';
 
-export function ordersWebsocketServer() {
+// websocketserver for watching specific orders
+export function orderWebsocket() {
   const wss = new WebSocketServer({ noServer: true });
 
   wss.on('connection', async (ws, req) => {
@@ -26,6 +28,5 @@ export function ordersWebsocketServer() {
 
     ws.on('close', () => console.warn('Client disconnected'));
   });
-
   return wss;
 }

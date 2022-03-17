@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { createSchema, dropSchema, end, insertData, query } from './lib/db.js';
 import { readDir, stat } from './lib/fs-helpers.js';
 import { listImages, uploadImage } from './lib/utils/cloudinary.js';
+
 const IMG_DIR = './../data/img';
 
 const path = dirname(fileURLToPath(import.meta.url));
@@ -29,6 +30,7 @@ async function images() {
   for (const image of filteredImages) {
     let cloudinaryUrl = '';
     const imgPath = join(path, IMG_DIR, image);
+    // eslint-disable-next-line no-await-in-loop
     const imgSize = (await stat(imgPath)).size;
     const uploaded = cloudinaryImages.find((i) => i.bytes === imgSize);
 
@@ -36,6 +38,7 @@ async function images() {
       cloudinaryUrl = uploaded.secure_url;
       console.info(`${imgPath} already uploaded to Cloudinary`);
     } else {
+      // eslint-disable-next-line no-await-in-loop
       const upload = await uploadImage(imgPath);
       cloudinaryUrl = upload.secure_url;
       console.info(`${imgPath} uploaded to Cloudinary`);
@@ -53,6 +56,7 @@ async function updateProductUrls() {
     RETURNING image
   `;
   for (const [key, value] of imageCloudinaryUrl.entries()) {
+    // eslint-disable-next-line no-await-in-loop
     const newImg = await query(q, [value, key]);
 
     if (newImg.rowCount !== 0 && newImg.rows[0].image !== value) {

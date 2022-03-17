@@ -187,9 +187,9 @@ export async function postMenuItemRoute(req, res) {
   try {
     const result = await createMenuItem({
       title,
-      price: parseInt(price),
+      price: parseInt(price, 10),
       description,
-      category: parseInt(category),
+      category: parseInt(category, 10),
       image,
     });
     if (result) {
