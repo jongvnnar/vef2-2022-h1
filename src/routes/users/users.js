@@ -66,7 +66,7 @@ export async function loginRoute(req, res) {
 
 export async function listUser(userId) {
   const user = await findById(userId);
-  delete user.password;
+  delete user?.password;
   return user;
 }
 
@@ -119,7 +119,7 @@ export async function updateUserRoute(req, res) {
     );
     if (updatedUser.rowCount === 1) {
       return res.status(200).json(updatedUser.rows[0]);
-    } else throw new Error('unable to update user');
+    } throw new Error('unable to update user');
   } catch (e) {
     console.error(`unable to change admin to "${admin}" for user "${id}"`, e);
   }

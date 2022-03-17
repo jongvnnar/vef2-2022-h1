@@ -5,14 +5,15 @@ import { adminWss, orderWss } from '../../app.js';
 import { pagedQuery, query } from '../../lib/db.js';
 import { OrderState } from '../../lib/order-state.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
-import { listCartLines, listProduct } from '../carts/carts.js';
+import { listCartLines } from '../carts/carts.js';
+import { findMenuItemById } from '../menus/menus.js';
 
 export async function addProductDetail(lines) {
   const result = [];
   for (const line of lines) {
     const { cart_id: cartId, product_id: productId, quantity } = line;
     // eslint-disable-next-line no-await-in-loop
-    const { title, description, image, category, price } = await listProduct(
+    const { title, description, image, category, price } = await findMenuItemById(
       productId
     );
     const newLine = {
