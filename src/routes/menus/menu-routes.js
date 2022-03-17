@@ -4,12 +4,11 @@ import { catchErrors } from '../../lib/catch-errors.js';
 import { returnResource } from '../../lib/utils/returnResource.js';
 import { validationCheck } from '../../lib/validation-helpers.js';
 import {
-  idValidator,
-  validateResourceExists,
-  validateResourceNotExists
+  atLeastOneBodyValueValidator,
+  idValidator, menuItemValidator,
+  validateResourceExists
 } from '../../lib/validation.js';
 import {
-  conditionalUpdateMenu,
   deleteMenuItemRoute,
   getMenuItem,
   listMenuItems,
@@ -29,7 +28,7 @@ router.get(
 router.post('/',
   requireAuthentication,
   requireAdmin,
-  validateResourceNotExists('title'),
+  menuItemValidator,
   catchErrors(postMenuItemRoute));
 
 router.get(
@@ -46,7 +45,7 @@ router.patch(
   requireAuthentication,
   requireAdmin,
   idValidator('id'),
-  validateResourceExists(conditionalUpdateMenu),
+  atLeastOneBodyValueValidator(['title', 'price', 'description', 'image', 'category']),
   validationCheck,
   catchErrors(patchMenuItemRoute)
 );
@@ -56,7 +55,7 @@ router.delete(
   requireAuthentication,
   requireAdmin,
   idValidator('id'),
-  validateResourceExists(deleteMenuItemRoute),
+  validateResourceExists(getMenuItem),
   validationCheck,
   catchErrors(deleteMenuItemRoute)
 );

@@ -49,12 +49,35 @@ export async function findMenuItemById(id) {
   return false;
 }
 
+export async function findMenuItemByTitle(title) {
+  const q = `
+    SELECT * FROM menu.products WHERE title = $1
+    `;
+
+  try {
+    const result = await query(q, [title]);
+
+    if (result.rowCount === 1) {
+      return result.rows[0];
+    }
+  } catch (e) {
+    console.error('Gat ekki fundið menu product eftir title');
+    return null;
+  }
+
+  return false;
+}
+
 export async function createMenuItem(title, price, description, category, image) {
+  const exists = await findMenuItemByTitle(title);
+  if (exists) {
+    console.error(`menu item með titil: ${title} nú þegar til`)
+    return null;
+  }
   const q = `
     INSERT INTO menu.products (title, price, description, category, image)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING title, price, description, category, image
-
     `;
 
   try {
@@ -68,7 +91,7 @@ export async function createMenuItem(title, price, description, category, image)
 }
 
 export async function conditionalUpdateMenu(id, values) {
-  if (values) { console.error('body er tómt'); return null; }
+  if (Object.keys(values).length === 0) { console.error('body er tómt'); return null; }
   const { title = '', price = null, description = '', category = null, image = '' } = values;
   // https://medium.com/developer-rants/conditional-update-in-postgresql-a27ddb5dd35
   const q = `
@@ -84,7 +107,6 @@ export async function conditionalUpdateMenu(id, values) {
   const vals = [xss(title), price, xss(description), category, xss(image), xss(id)];
   try {
     const result = await query(q, vals);
-    // console.log(result.rows[0]);
     return result.rows[0];
   } catch (e) {
     console.error('Gat ekki uppfært vöru');
@@ -132,8 +154,6 @@ export async function postMenuItemRoute(req, res) {
 export async function patchMenuItemRoute(req, res) {
   const { id } = req.params;
   const values = req.body;
-  console.log(values)
-
   const result = await conditionalUpdateMenu(id, values);
 
   if (result) {
