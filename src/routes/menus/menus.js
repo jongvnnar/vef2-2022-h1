@@ -15,7 +15,10 @@ export async function listMenuItems(req, res) {
   ORDER BY updated ASC
   `;
 
-  const menuItems = await pagedQuery(q, [category, searchtest], { offset, limit });
+  const menuItems = await pagedQuery(q, [category, searchtest], {
+    offset,
+    limit,
+  });
   const page = addPageMetadata(
     menuItems,
     req.path,
@@ -49,7 +52,13 @@ export async function findMenuItemById(id) {
   return false;
 }
 
-export async function createMenuItem(title, price, description, category, image) {
+export async function createMenuItem(
+  title,
+  price,
+  description,
+  category,
+  image
+) {
   const q = `
     INSERT INTO menu.products (title, price, description, category, image)
     VALUES ($1, $2, $3, $4, $5)
@@ -58,7 +67,13 @@ export async function createMenuItem(title, price, description, category, image)
     `;
 
   try {
-    const result = await query(q, [xss(title), price, xss(description), category, xss(image)]);
+    const result = await query(q, [
+      xss(title),
+      price,
+      xss(description),
+      category,
+      xss(image),
+    ]);
     return result.rows[0];
   } catch (e) {
     console.error('Gat ekki búið til vöru');
@@ -68,8 +83,17 @@ export async function createMenuItem(title, price, description, category, image)
 }
 
 export async function conditionalUpdateMenu(id, values) {
-  if (values) { console.error('body er tómt'); return null; }
-  const { title = '', price = null, description = '', category = null, image = '' } = values;
+  if (values) {
+    console.error('body er tómt');
+    return null;
+  }
+  const {
+    title = '',
+    price = null,
+    description = '',
+    category = null,
+    image = '',
+  } = values;
   // https://medium.com/developer-rants/conditional-update-in-postgresql-a27ddb5dd35
   const q = `
   UPDATE menu.products SET
@@ -81,7 +105,14 @@ export async function conditionalUpdateMenu(id, values) {
   WHERE id = $6
   RETURNING title, price, description, category, image;
   `;
-  const vals = [xss(title), price, xss(description), category, xss(image), xss(id)];
+  const vals = [
+    xss(title),
+    price,
+    xss(description),
+    category,
+    xss(image),
+    xss(id),
+  ];
   try {
     const result = await query(q, vals);
     // console.log(result.rows[0]);
@@ -118,10 +149,6 @@ export async function getMenuItem(_, req) {
 }
 
 export async function postMenuItemRoute(req, res) {
-  const { title, price, description, category, image } = req.body;
-
-  const result = await createMenuItem(title, price, description, category, image);
-
   if (result) {
     return res.status(201).json(result);
   }
@@ -132,7 +159,6 @@ export async function postMenuItemRoute(req, res) {
 export async function patchMenuItemRoute(req, res) {
   const { id } = req.params;
   const values = req.body;
-  console.log(values)
 
   const result = await conditionalUpdateMenu(id, values);
 
