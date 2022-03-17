@@ -1,9 +1,19 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
+import { createSchema, dropSchema, end } from '../lib/db.js';
 import { OrderState } from '../lib/order-state.js';
 /**
  * OrderState enum
  */
 describe('OrderState enum', () => {
+  beforeAll(async () => {
+    await dropSchema();
+    await createSchema();
+  });
+
+  afterAll(async () => {
+    await end();
+  });
+
   const NEW = 'NEW';
   const PREPARE = 'PREPARE';
   const COOKING = 'COOKING';
