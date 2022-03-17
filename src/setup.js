@@ -26,7 +26,6 @@ async function images() {
 
   const cloudinaryImages = await listImages();
   console.info(`${cloudinaryImages.length} images in Cloudinary`);
-  console.log(cloudinaryImages);
   for (const image of filteredImages) {
     let cloudinaryUrl = '';
     const imgPath = join(path, IMG_DIR, image);
