@@ -1,6 +1,7 @@
 import xss from 'xss';
 import { pagedQuery, query } from '../../lib/db.js';
 import { addPageMetadata } from '../../lib/utils/addPageMetadata.js';
+import { uploadImage } from '../../lib/utils/cloudinary.js';
 
 // TODO params
 export async function listMenuItems(req, res) {
@@ -71,17 +72,16 @@ export async function findMenuItemByTitle(title) {
   return false;
 }
 
-export async function createMenuItem(
+export async function createMenuItem({
   title,
   price,
   description,
   category,
-  image
-) {
+  image,
+}) {
   const exists = await findMenuItemByTitle(title);
   if (exists) {
-    console.error(`menu item með titil: ${title} nú þegar til`);
-    return null;
+    throw new Error(`menu item með titil: ${title} nú þegar til`);
   }
   const q = `
     INSERT INTO menu.products (title, price, description, category, image)
@@ -171,11 +171,34 @@ export async function getMenuItem(_, req) {
 }
 
 export async function postMenuItemRoute(req, res) {
-  if (result) {
-    return res.status(201).json(result);
+  const { title, price, description, category } = req.body;
+  const { path: imagePath } = req.file;
+  let image;
+  try {
+    const uploadResult = await uploadImage(imagePath);
+    if (!uploadResult || !uploadResult.secure_url) {
+      throw new Error('no secure url from cloudinary upload');
+    }
+    image = uploadResult.secure_url;
+  } catch (e) {
+    console.error(e);
+    return res.status(500).end().json({ error: e.message });
   }
-
-  return res.status(500).json({ error: 'Server error' });
+  try {
+    const result = await createMenuItem({
+      title,
+      price: parseInt(price),
+      description,
+      category: parseInt(category),
+      image,
+    });
+    if (result) {
+      return res.status(201).json(result);
+    }
+    return res.status(500).json({ error: 'Server error' });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 }
 
 export async function patchMenuItemRoute(req, res) {

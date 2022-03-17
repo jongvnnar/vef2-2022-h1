@@ -76,10 +76,6 @@ export const menuItemValidator = [
     .trim()
     .isLength({ min: 1 })
     .withMessage('Titill má ekki vera tómur'),
-  body('image')
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('sloð á mynd má ekki vera tóm'),
   body('title')
     .isLength({ max: 255 })
     .withMessage('sloð á mynd má að hámarki vera 255 stafir'),
@@ -139,5 +135,5 @@ export function validateResourceNotExists(fetchResource) {
 export const validateState = body('status')
   .isIn(['NEW', 'PREPARE', 'COOKING', 'READY', 'FINISHED'])
   .withMessage(
-    'Status must be one of \'NEW\', \'PREPARE\',\'COOKING\', \'READY\', \'FINISHED\''
+    "Status must be one of 'NEW', 'PREPARE','COOKING', 'READY', 'FINISHED'"
   );
