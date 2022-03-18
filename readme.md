@@ -182,4 +182,4 @@ curl --location --request POST 'https://vef2-2022-h1.herokuapp.com/orders/e7b2a4
   - Header `Authorization: Bearer YOUR_TOKEN`
 
 - Tengjast WS fyrir client
-  - `ws://vef2-2022-h1-synilausn.herokuapp.com/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0`
+  - `ws://vef2-2022-h1.herokuapp.com/orders/e7b2a445-aa01-4166-b675-d4c0934b32b0`
