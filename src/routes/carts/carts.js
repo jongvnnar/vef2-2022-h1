@@ -27,7 +27,7 @@ async function listCartLine(id) {
 }
 
 export async function listCartLines(cartId) {
-  const q = 'SELECT * FROM carts.lines WHERE cart_id = $1';
+  const q = 'SELECT * FROM carts.lines WHERE cart_id = $1 ORDER BY id';
 
   const result = await query(q, [cartId]);
 
