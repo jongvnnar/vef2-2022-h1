@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { query } from '../../lib/db.js';
+import { findMenuItemById } from '../menus/menus.js';
 
 export async function listCart(id) {
   const q = 'SELECT * FROM carts.carts WHERE id = $1';
@@ -26,7 +27,7 @@ async function listCartLine(id) {
 }
 
 export async function listCartLines(cartId) {
-  const q = 'SELECT * FROM carts.lines WHERE cart_id = $1';
+  const q = 'SELECT * FROM carts.lines WHERE cart_id = $1 ORDER BY id';
 
   const result = await query(q, [cartId]);
 
@@ -109,26 +110,12 @@ async function removeCartLine(id) {
   return null;
 }
 
-// nota frekar það fall sem mun koma í products
-export async function listProduct(id) {
-  const q = 'SELECT * FROM menu.products WHERE id = $1';
-
-  const result = await query(q, [id]);
-
-  if (result.rowCount === 1) {
-    return result.rows[0];
-  }
-
-  return null;
-}
-// -----------------------------------------
-
 async function addProductDetail(cartLines) {
   const result = [];
   for (const line of cartLines) {
     const { id, product_id, quantity } = line;
     // eslint-disable-next-line no-await-in-loop
-    const { title, description, image, category, price } = await listProduct(
+    const { title, description, image, category, price } = await findMenuItemById(
       product_id
     );
     const newLine = {
