@@ -11,13 +11,11 @@ import { findMenuItemById } from '../menus/menus.js';
 export async function addProductDetail(lines) {
   const result = [];
   for (const line of lines) {
-    const { cart_id: cartId, product_id: productId, quantity } = line;
+    const { product_id: productId, quantity } = line;
     // eslint-disable-next-line no-await-in-loop
-    const { title, description, image, category, price } = await findMenuItemById(
-      productId
-    );
+    const { title, description, image, category, price } =
+      await findMenuItemById(productId);
     const newLine = {
-      cartId,
       productId,
       title,
       description,
@@ -33,8 +31,7 @@ export async function addProductDetail(lines) {
 }
 
 export async function listOrderLines(orderId) {
-  const q =
-    'SELECT product_id, cart_id, quantity FROM orders.lines WHERE order_id = $1';
+  const q = 'SELECT product_id, quantity FROM orders.lines WHERE order_id = $1';
 
   const result = await query(q, [orderId]);
 
@@ -93,20 +90,15 @@ async function updateOrder({ orderId, newStatus }) {
   return false;
 }
 
-export async function createOrderLine({
-  orderId,
-  productId,
-  cartId,
-  quantity,
-} = {}) {
+export async function createOrderLine({ orderId, productId, quantity } = {}) {
   const q = `
     INSERT INTO orders.lines
-      (order_id, product_id, cart_id, quantity)
+      (order_id, product_id, quantity)
     VALUES
-      ($1, $2, $3, $4)
+      ($1, $2, $3)
     RETURNING *
   `;
-  const values = [xss(orderId), productId, xss(cartId), quantity];
+  const values = [xss(orderId), productId, quantity];
   const result = await query(q, values);
 
   if (result && result.rowCount === 1) {
@@ -130,7 +122,6 @@ async function createOrder({ cart, name }) {
       cartLines.forEach(async (cartLine) => {
         await createOrderLine({
           orderId: result.rows[0].id,
-          cartId: cartLine.cart_id,
           productId: cartLine.product_id,
           quantity: cartLine.quantity,
         });

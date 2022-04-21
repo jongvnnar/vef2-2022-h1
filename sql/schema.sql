@@ -57,11 +57,9 @@ CREATE TABLE  orders.lines(
   id SERIAL PRIMARY KEY,
   order_id uuid NOT NULL,
   product_id INTEGER NOT NULL,
-  cart_id uuid NOT NULL,
   quantity INTEGER CHECK(quantity > 0) NOT NULL,
   FOREIGN KEY (order_id) REFERENCES orders.orders(id) ON DELETE CASCADE,
-  FOREIGN KEY (product_id) REFERENCES menu.products(id) ON DELETE CASCADE,
-  FOREIGN KEY (cart_id) REFERENCES carts.carts(id) ON DELETE CASCADE
+  FOREIGN KEY (product_id) REFERENCES menu.products(id) ON DELETE CASCADE
 );
 
 CREATE TABLE  orders.states(

@@ -52,7 +52,6 @@ pool.on('error', (err) => {
 /**
  * @typedef {Object} Line
  * @property {number} product_id - ID of product
- * @property {string} cart_id - ID of cart
  * @property {number} num_of_products - number of products
  */
 

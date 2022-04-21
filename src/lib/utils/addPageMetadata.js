@@ -33,7 +33,7 @@ export function addPageMetadata(
 
   const newObj = { ...obj };
   const newPath = path === '/' ? pathPrefix : `${pathPrefix}${path}`;
-  const url = new URL(newPath, baseUrl || `http://${host}`);
+  const url = new URL(newPath, baseUrl || `https://${host}`);
   if (!baseUrl) {
     url.port = port;
   }
