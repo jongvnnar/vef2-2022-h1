@@ -40,7 +40,6 @@ INSERT INTO menu.products (title, price, description, category, image) VALUES ('
 
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Beef Carpaccio',3770, 'Chili jam, sweet almonds, herb pesto and ruccola salad', 4,'beef carpaccio.jpg');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Tiger Shrimp Tempura',3680, 'Kimchi, lemon and yuzu dressing', 4,'tiger shrimp tempura.jpg');
-INSERT INTO menu.products (title, price, description, category, image) VALUES ('Langoustine Tempura',4590, 'Beer batter, chili mayonnaise, oats and roasted garlic', 4,'langoustine tempura.jpg');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Smoked Arctic Char',3440, 'Lightly smoked artic char, crispy spiced bread, pickled fennel and mustard sauce', 4,'smoked arctic char.jpg');
 INSERT INTO menu.products (title, price, description, category, image) VALUES ('Duck Salad',3390, 'Confit duck, spinach, mandarins and mint dressing. 1/2 portion.', 4,'duck salad2.jpg');
 
