@@ -40,11 +40,7 @@ export function addUserIfAuthenticated(req, res, next) {
   })(req, res, next);
 }
 
-export async function websocketAuth(req) {
-  const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
-  if (!token) {
-    return { error: 'Authorization needed' };
-  }
+export async function verifyToken(token) {
   const args = {};
   jwt.verify(token, jwtSecret, (err, data) => {
     args.error = err?.message;
@@ -60,6 +56,13 @@ export async function websocketAuth(req) {
     }
   }
   return args;
+}
+export async function websocketAuth(req) {
+  const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+  if (!token) {
+    return { error: 'Authorization needed' };
+  }
+  return await verifyToken(token);
 }
 
 export function requireAuthentication(req, res, next) {
